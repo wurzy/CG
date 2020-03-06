@@ -168,7 +168,7 @@ void drawCone(float radius, float h, int slices, int stacks, string f) {
 	// cam -> altura de cada camada
 	float fat = 2 * M_PI / slices, cam = h / stacks;
 	float fat1, fat2, cam1, cam2, k, j;
-	float alt = 0; // centrado com base de altura 0
+	float alt = -(h/2); // centrado
 	float ang;
 
 	for (int n = 0; n < slices; n++) {
