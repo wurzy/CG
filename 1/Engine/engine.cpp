@@ -3,7 +3,7 @@ const float cam_radius = 20.0f; // default que tinhamos no skeleton
 float cam_alpha = 0, cam_beta = 0;
 float cx, cy, cz; // meter a camara a bater certo com esfera de radio radius
 
-string dir = "C:/Users/User/Documents/CG1920/";
+string dir = "./files/";
 vector<Point> pontos;
 
 void spherical2Cartesian() {

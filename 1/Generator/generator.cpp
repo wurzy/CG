@@ -1,6 +1,6 @@
 #include "generator.h"
 
-string dir = "C:/Users/User/Documents/CG1920/";
+string dir = "./files/";
 
 void drawSphere(double r, int stacks, int slices, string f) {
 	ofstream file(dir + f);
