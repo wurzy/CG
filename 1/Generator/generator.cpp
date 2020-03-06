@@ -164,34 +164,33 @@ void drawPlane(float side1, float side2, int axis, string f) {
 
 void drawCone(float radius, float h, int slices, int stacks, string f) {
 	ofstream file(dir + f);
-	// fat -> comprimento de cada fatia
+	// fat -> angulo entre de cada fatia
 	// cam -> altura de cada camada
 	float fat = 2 * M_PI / slices, cam = h / stacks;
 	float fat1, fat2, cam1, cam2, k, j;
 	float alt = 0; // centrado com base de altura 0
 	float ang;
 
+	for (int n = 0; n < slices; n++) {
+		ang = fat * n; // angulo fatia atual
+		k = ang + fat; // angulo fatia seguinte
+
+		file << 0 << " " << alt << " " << 0 << endl;
+		file << radius * sin(k) << " " << alt << " " << radius * cos(k) << endl;
+		file << radius * sin(ang) << " " << alt << " " << radius * cos(ang) << endl;
+	}
+
 	for (int i = 0; i < stacks; i++) {
 
-		cam1 = alt + (i * cam); //camada atual
-		cam2 = alt + ((i + 1) * cam); //camada seguinte
+		cam1 = alt + (i * cam); //altura camada atual
+		cam2 = alt + ((i + 1) * cam); //altura camada seguinte
 
-		fat1 = radius - ((radius / stacks) * i);  //fatia atual
-		fat2 = radius - ((radius / stacks) * (i + 1));  //fatia seguinte
-
-		for (int n = 0; n < slices; n++) {
-			ang = fat * n;
-			k = ang + fat;
-
-			file << 0 << " " << alt << " " << 0 << endl;
-			file << radius * sin(k) << " " << alt << " " << radius * cos(k) << endl;
-			file << radius * sin(ang) << " " << alt << " " << radius * cos(ang) << endl;
-		}
-		
+		fat1 = radius - ((radius / stacks) * i);  //raio da fatia atual
+		fat2 = radius - ((radius / stacks) * (i + 1));  //raio da fatia seguinte
 
 		for (int n = 0; n < slices; n++) {
-			j = fat * n; //comprimento fatia atual
-			k = j + fat; //comprimento fatia seguinte
+			j = fat * n; //angulo fatia atual
+			k = j + fat; //angulo fatia seguinte 
 
 			file << fat1 * sin(j) << " " << cam1 << " " << fat1 * cos(j) << endl;
 			file << fat2 * sin(k) << " " << cam2 << " " << fat2 * cos(k) << endl;
