@@ -1,21 +1,22 @@
 #pragma once
 #include <stdlib.h> //clash com GLUT
-#ifdef __APPLE__
-#include <GLUT/glut.h>
-#else
-#include <GL/glut.h>
-#endif
-
 #include <stdio.h>
 #include <fstream>
 #include <string>
 #include <iostream>
 #include <vector>
 #include <direct.h>
-#include "tinyxml2.h"
+#include "Transformations.h"
+#include "../Engine/tinyxml2.h"
+
 #define _USE_MATH_DEFINES
+#define DIR "./files/"
 #include <math.h>
-#include "../build/Point.h"
+#include "Point.h"
 
 using namespace std;
 using namespace tinyxml2;
+
+namespace XMLReader {
+	vector<Transformations> xmlReader(string f);
+}

@@ -1,10 +1,14 @@
 #include "engine.h"
+#include "../build/Transformations.h"
+#include "../build/XMLReader.h"
 const float cam_radius = 20.0f; // default que tinhamos no skeleton
 float cam_alpha = 0, cam_beta = 0;
 float cx, cy, cz; // meter a camara a bater certo com esfera de radio radius
+//Rotate rotate(1, 2, 3, 4);    object declaration
 
 string dir = "./files/";
 vector<Point> pontos;
+Transformations *t;
 
 void spherical2Cartesian() {
 	cx = cam_radius * cos(cam_beta) * sin(cam_alpha);
@@ -77,7 +81,8 @@ void renderScene(void) {
 		0.0, 0.0, 0.0,
 		0.0f, 1.0f, 0.0f);
 
-	drawVector();
+	t->draw();
+	//drawVector();
 	// End of frame
 	glutSwapBuffers();
 }
@@ -105,7 +110,7 @@ void processKeys(unsigned char c, int xx, int yy) {
 	glutPostRedisplay();
 
 }
-
+/*
 void modelReader(string f) {
 	//string line;
 	string line;
@@ -130,7 +135,7 @@ void modelReader(string f) {
 void xmlReader(string f) {
 	XMLDocument doc;
 	XMLElement* root;
-
+	t = new Transformations();
 	if (!(doc.LoadFile(f.c_str()))) {
 		root = doc.FirstChildElement();
 		for (XMLElement* elem = root->FirstChildElement(); elem != NULL; elem = elem->NextSiblingElement()) {
@@ -142,8 +147,10 @@ void xmlReader(string f) {
 	else {
 		cout << "ERROR!" << endl;
 	}
+	t->addPoints(pontos);
 	return;
 }
+*/
 
 int main(int argc, char **argv) {
 // init GLUT and the window
@@ -166,10 +173,9 @@ int main(int argc, char **argv) {
 	glEnable(GL_CULL_FACE);
 	//glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
 
-	xmlReader(dir + argv[1]);
+	//xmlReader(dir + argv[1]);
 	spherical2Cartesian();
 // enter GLUT's main cycle
 	glutMainLoop();
-	
 	return 1;
 }
