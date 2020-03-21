@@ -74,59 +74,30 @@ public:
 	}
 };
 
-
-class Transformations {
-	Translate *translate; // c++ pointers to objects :/ 
-	Rotate *rotate;
-	Scale *scale;
-	vector<Point> points; // models num grupo
-	vector<Transformations> subgroups;
+class Model {
+	vector<Point> points;
+	float red, green, blue;
 
 public:
-	Transformations() {
-		this->translate = NULL;
-		this->scale = NULL;
-		this->rotate = NULL;
-		this->points = vector<Point>();
-		this->subgroups = vector<Transformations>();
-	}
-	void addPoints(vector<Point> p) {
-		points.insert(this->points.end(),p.begin(),p.end());
+	Model(vector<Point> p, float r, float g, float b) {
+		this->points = p;
+		this->red = r;
+		this->green = g;
+		this->blue = b;
 	}
 
-	void addSubgroup(Transformations sub) {
-		subgroups.push_back(sub);
-	}
-
-	void addTranslate(Translate t) {
-		this->translate = &t;
-	}
-	
-	void addScale(Scale s) {
-		this->scale = &s;
-	}
-
-	void addRotate(Rotate r) {
-		this->rotate = &r;
-	}
-
-	void draw() {
-		glPushMatrix();
-
-		if (this->translate) this->translate->apply(); // parent transformations
-		if (this->scale) this->scale->apply();
-		if (this->rotate) this->rotate->apply();
-
+	void drawModel() {
 		int size = this->points.size();
 		Point p1, p2, p3;
 
 		glBegin(GL_TRIANGLES);
 		for (int i = 0; i < size; i += 6) { //
+			glColor3f(this->red, this->green, this->blue);
+
 			p1 = this->points.at(i);
 			p2 = this->points.at(i + 1);
 			p3 = this->points.at(i + 2);
 
-			glColor3f(1.0f, 0.0f, 0.0f);
 			glVertex3f(p1.x, p1.y, p1.z);
 			glVertex3f(p2.x, p2.y, p2.z);
 			glVertex3f(p3.x, p3.y, p3.z);
@@ -135,15 +106,63 @@ public:
 			p2 = this->points.at(i + 4);
 			p3 = this->points.at(i + 5);
 
-			glColor3f(0.0f, 0.0f, 1.0f);
 			glVertex3f(p1.x, p1.y, p1.z);
 			glVertex3f(p2.x, p2.y, p2.z);
 			glVertex3f(p3.x, p3.y, p3.z);
 		}
 		glEnd();
+	}
+};
+
+class Transformations {
+	Translate *translate; // c++ pointers to objects :/ 
+	Rotate *rotate;
+	Scale *scale;
+	vector<Model> models; // models num grupo
+	vector<Transformations> subgroups;
+
+public:
+	Transformations() {
+		this->translate = NULL;
+		this->scale = NULL;
+		this->rotate = NULL;
+		this->models = vector<Model>();
+		this->subgroups = vector<Transformations>();
+	}
+	void addModel(Model* m) {
+		//points.insert(this->points.end(),p.begin(),p.end());
+		models.push_back(*m);
+	}
+
+	void addSubgroup(Transformations* sub) {
+		subgroups.push_back(*sub);
+	}
+
+	void addTranslate(Translate* t) {
+		this->translate = t;
+	}
+	
+	void addScale(Scale* s) {
+		this->scale = s;
+	}
+
+	void addRotate(Rotate* r) {
+		this->rotate = r;
+	}
+
+	void drawAll() {
+		glPushMatrix();
+
+		if (this->translate) this->translate->apply(); // parent transformations
+		if (this->scale) this->scale->apply();
+		if (this->rotate) this->rotate->apply();
+		
+		for (Model m : this->models) {
+			m.drawModel();
+		}
 
 		for (Transformations t : this->subgroups) {
-			t.draw(); // subgroup transformations, recursive
+			t.drawAll(); // subgroup transformations, recursive
 		}	
 		glPopMatrix();
 	}
