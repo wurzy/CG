@@ -1,4 +1,6 @@
 #pragma once
+#ifndef __XMLREADER__
+#define __XMLREADER__
 #include <stdlib.h> //clash com GLUT
 #include <stdio.h>
 #include <fstream>
@@ -7,16 +9,18 @@
 #include <vector>
 #include <direct.h>
 #include "Transformations.h"
-#include "../Engine/tinyxml2.h"
+#include "tinyxml2.h"
+#include "Point.h"
 
 #define _USE_MATH_DEFINES
 #define DIR "./files/"
 #include <math.h>
-#include "Point.h"
 
 using namespace std;
 using namespace tinyxml2;
 
 namespace XMLReader {
-	vector<Transformations> xmlReader(string f);
+	void xmlReader(string f, vector<Transformations>* transforms);
 }
+
+#endif

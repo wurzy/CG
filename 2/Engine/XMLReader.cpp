@@ -1,4 +1,4 @@
-#include "../build/XMLReader.h"
+#include "XMLReader.h"
 namespace XMLReader {
 
 	vector<Point> readModel(string f) {
@@ -15,7 +15,6 @@ namespace XMLReader {
 				points.push_back(p);
 				i++;
 			}
-			cout << "File: " << f << " done!" << endl;
 		}
 		else {
 			cout << "ERROR READING FILE " << f <<" (Does not exist?)" << endl;
@@ -27,11 +26,8 @@ namespace XMLReader {
 	void parseModels(XMLElement* models, Transformations* transforms) {
 		for (XMLElement* elem = models->FirstChildElement("model"); elem; elem = elem->NextSiblingElement("model")) {
 			string file = elem->Attribute("file");
-			float red = elem->FloatAttribute("r");
-			float green = elem->FloatAttribute("g");
-			float blue = elem->FloatAttribute("b");
 			vector<Point> points = readModel(DIR + file);
-			transforms->addModel(new Model(points, red, green, blue));
+			transforms->addModel(new Model(points));
 		}
 	}
 
@@ -55,19 +51,25 @@ namespace XMLReader {
 				transforms->addSubgroup(subgroup);
 				parseGroup(elem, subgroup);
 			}
+			else if (type.compare("colour") == 0) {
+				float red = (elem->IntAttribute("r"))/255.0f;
+				float green = (elem->IntAttribute("g"))/255.0f;
+				float blue = (elem->IntAttribute("b"))/255.0f;
+				transforms->addRGB(red, green, blue);
+			}
 			else {
 				cout << "ERROR OCCURRED ON GROUP" << endl;
 				cout << "Due to: " << elem->Value() << endl;
 			}
 		}
+
 	}
 	
-	vector<Transformations> xmlReader(string f) {
+	void xmlReader(string f, vector<Transformations>* transforms) {
 		XMLDocument doc;
 		XMLNode* root;
 
 		vector<Point> model;
-		vector<Transformations> transforms;
 		Transformations* t;
 		if (!(doc.LoadFile(f.c_str()))) {
 			root = doc.FirstChild(); // scene is root
@@ -75,15 +77,12 @@ namespace XMLReader {
 			for (XMLElement* group = root->FirstChildElement("group"); group; group = group->NextSiblingElement("group")) {
 				t = new Transformations();
 				parseGroup(group, t);
-				transforms.push_back(*t);
-				//string file = elem->Attribute("file");
-				//cout << "Trying to read: " << file << "..." << endl;
-				//model = modelReader(DIR + file);
+				transforms->push_back(*t);
 			}
+			cout << "Done! Read scene from: " << f << endl;
 		}
 		else {
 			cout << "ERROR!" << endl;
 		}
-		return transforms;
 	}
 }

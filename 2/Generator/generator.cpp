@@ -321,6 +321,49 @@ void drawVase(float radius, float radius2, float h, int slices, int stacks, stri
 	file.close();
 }
 
+// rc = radius inside the ring, ro = radius of the ring
+void drawRing(float rc, float ro, int sides, int rings, string f) {
+	ofstream file(dir + f);
+	float stepTheta = (2 * M_PI) / sides;
+	float stepPhi = (2 * M_PI) / rings;
+	float theta1, theta2, phi1, phi2, x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4;
+
+	for (int i = 0; i < rings; i++) {
+		theta1 = stepTheta * i;
+		theta2 = stepTheta * (i + 1.0f); // outer ring
+
+		for (int j = 0; j < sides; j++) {
+			phi1 = stepPhi * j;
+			phi2 = stepPhi * (j + 1.0f); // inner ring
+
+			x1 = (rc + ro * cosf(phi1)) * cosf(theta1);
+			y1 = (rc + ro * cosf(phi1)) * sinf(theta1);
+			z1 = ro * sin(phi1);
+
+			x2 = (rc + ro * cosf(phi2)) * cosf(theta1);
+			y2 = (rc + ro * cosf(phi2)) * sinf(theta1);
+			z2 = ro * sin(phi2);
+
+			x3 = (rc + ro * cosf(phi1)) * cosf(theta2);
+			y3 = (rc + ro * cosf(phi1)) * sinf(theta2);
+			z3 = ro * sin(phi1);
+
+			x4 = (rc + ro * cosf(phi2)) * cosf(theta2);
+			y4 = (rc + ro * cosf(phi2)) * sinf(theta2);
+			z4 = ro * sin(phi2);
+
+			file << x1 << " " << y1 << " " << z1 << endl;
+			file << x3 << " " << y3 << " " << z3 << endl;
+			file << x4 << " " << y4 << " " << z4 << endl;
+
+			file << x4 << " " << y4 << " " << z4 << endl;
+			file << x2 << " " << y2 << " " << z2 << endl;
+			file << x1 << " " << y1 << " " << z1 << endl;
+		}
+	}
+
+	file.close();
+}
 
 void parseInput(int argc, char** argv) {
 	if (string(argv[1]) == "sphere") {
@@ -378,13 +421,25 @@ void parseInput(int argc, char** argv) {
 			drawVase(atof(argv[2]), atof(argv[3]), atof(argv[4]), atoi(argv[5]), atoi(argv[6]), argv[7]);
 		}
 	}
+	else if (string(argv[1]) == "ring") {
+		if (argc != 7) {
+			cout << "ERROR" << endl;
+		}
+		else {
+			cout << "OK! Generating Ring." << endl;
+			drawRing(atof(argv[2]), atof(argv[3]), atoi(argv[4]), atoi(argv[5]),argv[6]);
+		}
+	}
+	else {
+		cout << "ERROR! Unknown." << endl;
+	}
 }
 
 
 int main(int argc, char** argv) {
 	_mkdir(dir.c_str());
 	if (argc == 0 || argc > 8 ) {
-		cout << "ERROR" << endl;
+		cout << "ERROR! Few arguments." << endl;
 	}
 	else{
 		parseInput(argc, argv);

@@ -1,15 +1,13 @@
 cmake_minimum_required(VERSION 3.9)
 project(Generator)
 
-set(CMAKE_CXX_STANDARD 17)
-
 add_executable(${PROJECT_NAME} Generator/generator.cpp)
 
 
 project(Engine)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
-add_executable(${PROJECT_NAME} Engine/engine.cpp Engine/tinyxml2.cpp)
+add_executable(${PROJECT_NAME} Engine/engine.cpp Engine/tinyxml2.cpp Engine/XMLReader.cpp)
 
 find_package(OpenGL REQUIRED)
 include_directories(${OpenGL_INCLUDE_DIRS})

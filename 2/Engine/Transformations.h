@@ -1,4 +1,6 @@
 #pragma once
+#ifndef __MY__TRANSFORMS__
+#define __MY__TRANSFORMS__
 
 #include <stdio.h>
 #include <fstream>
@@ -34,6 +36,10 @@ public:
 	void apply() {
 		glRotatef(this->ang, this->x, this->y, this->z);
 	}
+
+	void toString() {
+		cout << "Rotate" << ang << " " << x << " " << y << " " << z << endl;
+	}
 };
 
 
@@ -52,6 +58,10 @@ public:
 
 	void apply() {
 		glTranslatef(this->x, this->y, this->z);
+	}
+
+	void toString() {
+		cout << "Translate: " << x << " " << y << " " << z << endl;
 	}
 };
 
@@ -72,27 +82,27 @@ public:
 	void apply() {
 		glScalef(this->x, this->y, this->z);
 	}
+
+	void toString() {
+		cout << "Scale" << x << " " << y << " " << z << endl;
+	}
 };
 
 class Model {
 	vector<Point> points;
-	float red, green, blue;
 
 public:
-	Model(vector<Point> p, float r, float g, float b) {
+	Model(vector<Point> p) {
 		this->points = p;
-		this->red = r;
-		this->green = g;
-		this->blue = b;
 	}
 
-	void drawModel() {
+	void drawModel(float red, float green, float blue) {
 		int size = this->points.size();
 		Point p1, p2, p3;
 
+		glColor3f(red, green, blue);
 		glBegin(GL_TRIANGLES);
 		for (int i = 0; i < size; i += 6) { //
-			glColor3f(this->red, this->green, this->blue);
 
 			p1 = this->points.at(i);
 			p2 = this->points.at(i + 1);
@@ -112,30 +122,37 @@ public:
 		}
 		glEnd();
 	}
+	void toString() {
+		cout << points.size() << endl;
+	}
 };
 
 class Transformations {
-	Translate *translate; // c++ pointers to objects :/ 
-	Rotate *rotate;
-	Scale *scale;
-	vector<Model> models; // models num grupo
-	vector<Transformations> subgroups;
+	Translate* translate; // c++ pointers to objects :/ 
+	Rotate* rotate;
+	Scale* scale;
+	vector<Model*> models; // models num grupo
+	vector<Transformations*> subgroups;
+	float red, green, blue;
 
 public:
 	Transformations() {
 		this->translate = NULL;
 		this->scale = NULL;
 		this->rotate = NULL;
-		this->models = vector<Model>();
-		this->subgroups = vector<Transformations>();
+		this->models = vector<Model*>();
+		this->subgroups = vector<Transformations*>();
+		red = 1.0f;
+		green = blue = 0.0f;
 	}
+
 	void addModel(Model* m) {
 		//points.insert(this->points.end(),p.begin(),p.end());
-		models.push_back(*m);
+		models.push_back(m);
 	}
 
 	void addSubgroup(Transformations* sub) {
-		subgroups.push_back(*sub);
+		subgroups.push_back(sub);
 	}
 
 	void addTranslate(Translate* t) {
@@ -150,22 +167,49 @@ public:
 		this->rotate = r;
 	}
 
+	void addRGB(float r, float g, float b) {
+		this->red = r;
+		this->green = g;
+		this->blue = b;
+	}
+
 	void drawAll() {
 		glPushMatrix();
-
+		if (this->rotate) this->rotate->apply();
 		if (this->translate) this->translate->apply(); // parent transformations
 		if (this->scale) this->scale->apply();
-		if (this->rotate) this->rotate->apply();
 		
-		for (Model m : this->models) {
-			m.drawModel();
+		for (Model* m : this->models) {
+			m->drawModel(red,green,blue);
 		}
 
-		for (Transformations t : this->subgroups) {
-			t.drawAll(); // subgroup transformations, recursive
-		}	
+		for (Transformations* t : this->subgroups) {
+			t->drawAll(); // subgroup transformations, recursive
+		}
 		glPopMatrix();
+
+	}
+
+	void toString() {
+		if(translate) translate->toString();
+		if(rotate) rotate->toString();
+		if (scale) scale->toString();
+		
+		cout << "Colour of these Models: " << red << " " << green << " " << blue << endl;
+		
+		cout << "Models: " << endl;
+		for (Model* m : models) {
+			m->toString();
+		}
+		cout << "End models. " << endl;
+		cout << "//Subgroups//" << endl;
+		for (Transformations* t : subgroups) {
+			t->toString();
+		}
+		cout << "//End Subgroups//" << endl;
 	}
 };
 
+
+#endif
 
