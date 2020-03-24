@@ -1,0 +1,165 @@
+<scene>
+  <!--Floor-->
+  <group>
+    <scale x="100" y="0" z="100"/>
+    <colour r="225" g="225" b="225" />
+    <models>
+      <model file="Plane.3d"/>
+    </models>
+  </group>
+  <!--Base-->
+  <group>
+    <translate x="0" y="1.5" z="0"/>
+    <scale x="0.3" y="1" z="0.3"/>
+    <colour r="51" g="25" b="0" />
+    <models>
+      <model file="Cyl.3d"/>
+    </models>
+  </group>
+  <!--Presents-->
+  <group>
+    <translate x="0" y="0.5" z="1"/>
+    <rotate angle="-35" x="0" y="1" z="0"/>
+    <colour r="39" g="218" b="146" />
+    <models>
+      <model file="Cube.3d"/>
+    </models>
+  </group>
+  <group>
+    <translate x="1" y="0.5" z="1"/>
+    <rotate angle="15" x="0" y="1" z="0"/>
+    <colour r="75" g="92" b="203" />
+    <models>
+      <model file="Cube.3d"/>
+    </models>
+  </group>
+  <group>
+    <translate x="-1" y="0.5" z="2"/>
+    <rotate angle="-60" x="0" y="1" z="0"/>
+    <colour r="225" g="91" b="235" />
+    <models>
+      <model file="Cube.3d"/>
+    </models>
+  </group>
+  <!--Top-->
+  <group>
+    <!--Root Tree-->
+    <translate x="0" y="3" z="0"/>
+    <scale x="0.5" y="0.5" z="0.5"/>
+    <colour r="18" g="220" b="45" />
+    <models>
+      <model file="Cone.3d"/>
+    </models>
+    <!--Addornments-->
+    <group>
+      <translate x="0" y="-1.6" z="4"/>
+      <rotate angle="120" x="0" y="1" z="0"/>
+      <scale x="0.05" y="0.05" z="0.05"/>
+      <colour r="243" g="46" b="46" />
+      <models>
+        <model file="Sphere.3d"/>
+      </models>
+    </group>
+    <group>
+      <translate x="0" y="-1.6" z="4"/>
+      <rotate angle="-50" x="0" y="1" z="0"/>
+      <scale x="0.05" y="0.05" z="0.05"/>
+      <colour r="243" g="46" b="46" />
+      <models>
+        <model file="Sphere.3d"/>
+      </models>
+    </group>
+    <group>
+      <translate x="0" y="-1.6" z="4"/>
+      <rotate angle="-120" x="0" y="1" z="0"/>
+      <scale x="0.05" y="0.05" z="0.05"/>
+      <colour r="243" g="46" b="46" />
+      <models>
+        <model file="Sphere.3d"/>
+      </models>
+    </group>
+    <!--Subtree-->
+    <group>
+      <translate x="0" y="2" z="0"/>
+      <scale x="0.8" y="0.8" z="0.8"/>
+      <colour r="18" g="220" b="45" />
+      <models>
+        <model file="Cone.3d"/>
+      </models>
+      <!--Addornments-->
+      <group>
+        <translate x="0" y="-1.6" z="4"/>
+        <rotate angle="20" x="0" y="1" z="0"/>
+        <scale x="0.05" y="0.05" z="0.05"/>
+        <colour r="243" g="46" b="46" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+      <group>
+        <translate x="0" y="-1.6" z="4"/>
+        <rotate angle="-100" x="0" y="1" z="0"/>
+        <scale x="0.05" y="0.05" z="0.05"/>
+        <colour r="243" g="46" b="46" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+      <group>
+        <translate x="0" y="-1.6" z="4"/>
+        <rotate angle="-170" x="0" y="1" z="0"/>
+        <scale x="0.05" y="0.05" z="0.05"/>
+        <colour r="243" g="46" b="46" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+      <!--Subtree-->
+      <group>
+        <translate x="0" y="2" z="0"/>
+        <scale x="0.8" y="0.8" z="0.8"/>
+        <colour r="18" g="220" b="45" />
+        <models>
+          <model file="Cone.3d"/>
+        </models>
+        <!--Addornments-->
+        <group>
+          <translate x="0" y="-1.6" z="4"/>
+          <rotate angle="40" x="0" y="1" z="0"/>
+          <scale x="0.05" y="0.05" z="0.05"/>
+          <colour r="243" g="46" b="46" />
+          <models>
+            <model file="Sphere.3d"/>
+          </models>
+        </group>
+        <group>
+          <translate x="0" y="-1.6" z="4"/>
+          <rotate angle="-220" x="0" y="1" z="0"/>
+          <scale x="0.05" y="0.05" z="0.05"/>
+          <colour r="243" g="46" b="46" />
+          <models>
+            <model file="Sphere.3d"/>
+          </models>
+        </group>
+        <group>
+          <translate x="0" y="-1.6" z="4"/>
+          <rotate angle="-70" x="0" y="1" z="0"/>
+          <scale x="0.05" y="0.05" z="0.05"/>
+          <colour r="243" g="46" b="46" />
+          <models>
+            <model file="Sphere.3d"/>
+          </models>
+        </group>
+        <!--Star-->
+        <group>
+          <translate x="0" y="2" z="0"/>
+          <scale x="0.2" y="0.2" z="0.2"/>
+          <colour r="255" g="255" b="0" />
+          <models>
+            <model file="Sphere.3d"/>
+          </models>
+        </group>
+      </group>
+    </group>
+  </group>
+</scene>
