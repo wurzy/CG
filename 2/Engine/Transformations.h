@@ -102,19 +102,11 @@ public:
 
 		glColor3f(red, green, blue);
 		glBegin(GL_TRIANGLES);
-		for (int i = 0; i < size; i += 6) { //
+		for (int i = 0; i < size; i += 3) { //
 
 			p1 = this->points.at(i);
 			p2 = this->points.at(i + 1);
 			p3 = this->points.at(i + 2);
-
-			glVertex3f(p1.x, p1.y, p1.z);
-			glVertex3f(p2.x, p2.y, p2.z);
-			glVertex3f(p3.x, p3.y, p3.z);
-
-			p1 = this->points.at(i + 3);
-			p2 = this->points.at(i + 4);
-			p3 = this->points.at(i + 5);
 
 			glVertex3f(p1.x, p1.y, p1.z);
 			glVertex3f(p2.x, p2.y, p2.z);
