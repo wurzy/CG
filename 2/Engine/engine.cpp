@@ -106,7 +106,7 @@ void mouseMove(int x, int y) {
 		}
 		else {
 			cam_alpha -= x_off * 0.001f; // calculate x offset for camera
-			float camOffset = y_off * 0.001f;;
+			float camOffset = y_off * 0.001f;
 			if (cam_beta + camOffset < -1.5f ) {
 				cam_beta = -1.5f;
 			}
