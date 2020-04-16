@@ -1,0 +1,107 @@
+<scene>
+  <group>
+    <!--Sun-->
+    <scale x="5" y="5" z="5"/>
+    <colour r="255" g="92" b="21" />
+    <models>
+      <model file="planet.3d"/>
+    </models>
+  </group>
+  <!--Mercury-->
+  <group>
+    <translate x="0" y="0" z="7.74"/>
+    <scale x="0.009" y="0.009" z="0.009"/>
+    <colour r="101" g="75" b="22" />
+    <models>
+      <model file="planet.3d" />
+    </models>
+  </group>
+  <!--Venus-->
+  <group>
+    <rotate angle="50" x="0" y="1" z="0"/>
+    <translate x="14.47" y="0" z="0"/>
+    <scale x="0.022" y="0.022" z="0.022"/>
+    <colour r="232" g="167" b="37" />
+    <models>
+      <model file="planet.3d"/>
+    </models>
+  </group>
+  <!--Earth-->
+  <group>
+    <rotate angle="-90" x="0" y="1" z="0"/>
+    <translate x="20.0" y="0" z="5"/>
+    <scale x="0.023" y="0.023" z="0.023"/>
+    <colour r="71" g="136" b="168" />
+    <models>
+      <model file="planet.3d"/>
+    </models>
+    <!--Moon-->
+    <group>
+      <rotate angle="-35" x="1" y="0" z="0"/>
+      <translate x="0" y="0" z="10"/>
+      <scale x="0.5" y="0.5" z="0.5"/>
+      <colour r="162" g="169" b="172" />
+      <models>
+        <model file="planet.3d"/>
+      </models>
+    </group>
+  </group>
+  <!--Mars-->
+  <group>
+    <rotate angle="50" x="0" y="1" z="0"/>
+    <translate x="0" y="0" z="30.47"/>
+    <scale x="0.012" y="0.012" z="0.012"/>
+    <colour r="199" g="87" b="46" />
+    <models>
+      <model file="planet.3d"/>
+    </models>
+  </group>
+  <!--Jupiter-->
+  <group>
+    <rotate angle="-170" x="0" y="1" z="0"/>
+    <translate x="0" y="0" z="104.9"/>
+    <colour r="164" g="100" b="27" />
+    <scale x="0.257" y="0.257" z="0.257"/>
+    <models>
+      <model file="planet.3d" />
+    </models>
+  </group>
+  <!--Saturn-->
+  <group>
+    <rotate angle="-190" x="0" y="1" z="0"/>
+    <translate x="191.64" y="0" z="0"/>
+    <scale x="0.217" y="0.217" z="0.217"/>
+    <colour r="188" g="140" b="105" />
+    <models>
+      <model file="planet.3d" />
+    </models>
+    <group>
+      <rotate angle ="90" x="0" y ="1" z ="1"/>
+      <scale x="1.0" y="1.0" z="0.6"/>
+      <colour r="255" g="255" b="255"/>
+      <models>
+        <model file="Ring.3d" />
+      </models>
+    </group>
+  </group>
+  <!--Uranus-->
+  <group>
+    <rotate angle="-210" x="0" y="1" z="0"/>
+    <translate x="0" y="0" z="384.02"/>
+    <scale x="0.092" y="0.092" z="0.092"/>
+    <colour r="81" g="174" b="192" />
+    <models>
+      <model file="planet.3d"/>
+    </models>
+  </group>
+  <!--Neptune-->
+  <group>
+    <rotate angle="-230" x="0" y="1" z="0"/>
+    <translate x="600.95" y="0" z="0"/>
+    <scale x="0.089" y="0.089" z="0.089"/>
+    <colour r="20" g="82" b="228" />
+    <models>
+      <model file="planet.3d"/>
+    </models>
+  </group>
+</scene>

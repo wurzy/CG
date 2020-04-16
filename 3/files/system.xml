@@ -1,0 +1,283 @@
+<scene>
+  <group>
+    <!--Sun-->
+    <scale x="1.8" y="1.8" z="1.8"/>
+    <colour r="255" g="92" b="21" />
+    <models>
+      <model file="Sphere.3d"/>
+    </models>
+  </group>
+  <!--Mercury-->
+  <group>
+    <translate x="0" y="0" z="12"/>
+    <rotate angle="-90" x="0" y="1" z="0"/>
+    <scale x="0.2" y="0.2" z="0.2"/>
+    <colour r="101" g="75" b="22" />
+    <models>
+      <model file="Sphere.3d" />
+    </models>
+  </group>
+  <!--Venus-->
+  <group>
+    <translate x="0" y="0" z="17"/>
+    <rotate angle="-40" x="0" y="1" z="0"/>
+    <scale x="0.45" y="0.45" z="0.45"/>
+    <colour r="232" g="167" b="37" />
+    <models>
+      <model file="Sphere.3d"/>
+    </models>
+  </group>
+  <!--Earth-->
+  <group>
+    <translate x="0" y="0" z="24"/>
+    <rotate angle="160" x="0" y="1" z="0"/>
+    <scale x="0.5" y="0.5" z="0.5"/>
+    <colour r="71" g="136" b="168" />
+    <models>
+      <model file="Sphere.3d"/>
+    </models>
+    <!--Moon-->
+    <group>
+      <translate x="0" y="0" z="10"/>
+      <scale x="0.27" y="0.27" z="0.27"/>
+      <colour r="162" g="169" b="172" />
+      <models>
+        <model file="Sphere.3d"/>
+      </models>
+    </group>
+  </group>
+  <!--Mars-->
+  <group>
+    <translate x="0" y="0" z="33"/>
+    <rotate angle="180" x="0" y="1" z="0"/>
+    <scale x="0.3" y="0.3" z="0.3"/>
+    <colour r="199" g="87" b="46" />
+    <models>
+      <model file="Sphere.3d"/>
+    </models>
+    <!--Deimos-->
+    <group>
+    <translate x="0" y="0" z="9"/>
+    <scale x="0.19" y="0.19" z="0.19"/>
+    <rotate angle ="56" x="1" y="1" z="0"/>
+    <colour r="230" g="223" b="125" />
+    <models>
+      <model file="Sphere.3d"/>
+    </models>
+    </group>
+    <!--Phobos-->
+    <group>
+    <translate x="0" y="0" z="-9"/>
+    <rotate angle ="56" x="1" y="0" z="0"/>
+    <scale x="0.2" y="0.2" z="0.2"/>
+    <colour r="175" g="170" b="96" />
+    <models>
+      <model file="Sphere.3d"/>
+    </models>
+    </group>
+  </group>
+  <!--Jupiter-->
+  <group>
+    <translate x="0" y="0" z="45"/>
+    <rotate angle="180" x="0" y="1" z="0"/>
+    <scale x="1.1" y="1.1" z="1.1"/>
+    <colour r="164" g="100" b="27" />
+    <models>
+      <model file="Sphere.3d" />
+    </models>
+  <!--Galilean Moons-->
+    <group>
+      <scale x="0.45" y="0.45" z="0.45"/>
+      <!--Io-->
+      <group>
+        <translate x="0" y="0" z="-16"/>
+        <rotate angle="56" x="1" y="1" z="0"/>           
+        <scale x="0.27" y="0.27" z="0.27"/>
+        <colour r="242" g="235" b="144" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+      <!--Ganimede-->
+      <group>
+        <translate x="0" y="0" z="16"/>
+        <rotate angle="166" x="0" y="1" z="1"/>           
+        <scale x="0.45" y="0.45" z="0.45"/>
+        <colour r="148" g="146" b="125" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+      <!--Europa-->
+      <group>
+        <translate x="14" y="0" z="0"/>
+        <rotate angle="100" x="1" y="1" z="0"/>           
+        <scale x="0.18" y="0.18" z="0.18"/>
+        <colour r="102" g="99" b="53" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+      <!--Callisto-->
+      <group>
+        <translate x="-16" y="0" z="0"/>
+        <rotate angle="-199" x="1" y="1" z="0"/>           
+        <scale x="0.31" y="0.31" z="0.31"/>
+        <colour r="94" g="93" b="79" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group> 
+    </group> 
+  </group>
+  <!--Saturn-->
+  <group>
+    <translate x="0" y="0" z="60"/>
+    <rotate angle="-20" x="0" y="1" z="0"/>
+    <scale x="0.9" y="0.9" z="0.9"/>
+    <colour r="188" g="140" b="105" />
+    <models>
+      <model file="Sphere.3d" />
+    </models>
+    <group>
+      <rotate angle ="90" x="0" y ="1" z ="1"/>
+      <scale x="1.0" y="1.0" z="0.2"/>
+      <colour r="255" g="255" b="255"/>
+      <models>
+        <model file="Ring.3d" />
+      </models>
+    </group>
+    <!--Main Saturn Moons-->
+    <group>
+      <scale x="0.55" y="0.55" z="0.55"/>
+      <!--Titan-->
+      <group>
+        <translate x="0" y="0" z="-22"/>
+        <rotate angle="62" x="1" y="1" z="0"/>           
+        <scale x="0.5" y="0.5" z="0.5"/>
+        <colour r="142" g="202" b="154" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+      <!--Enceladus-->
+      <group>
+        <translate x="0" y="0" z="16"/>
+        <rotate angle="184" x="0" y="1" z="1"/>           
+        <scale x="0.12" y="0.12" z="0.12"/>
+        <colour r="240" g="240" b="240" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+      <!--Iapetus-->
+      <group>
+        <translate x="0" y="0" z="18"/>
+        <rotate angle="82" x="1" y="1" z="0"/>           
+        <scale x="0.2" y="0.2" z="0.2"/>
+        <colour r="215" g="200" b="161" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+    </group> 
+  </group>
+  <!--Uranus-->
+  <group>
+    <translate x="0" y="0" z="72"/>
+    <rotate angle="0" x="0" y="1" z="0"/>
+    <scale x="0.7" y="0.7" z="0.7"/>
+    <colour r="81" g="174" b="192" />
+    <models>
+      <model file="Sphere.3d"/>
+    </models>
+    <!--Major Uranus Moons-->
+    <group>
+      <scale x="0.71" y="0.71" z="0.71"/>
+      <!--Titania-->
+      <group>
+        <translate x="0" y="0" z="15"/>
+        <rotate angle="-92" x="1" y="1" z="0"/>           
+        <scale x="0.44" y="0.44" z="0.44"/>
+        <colour r="154" g="140" b="102" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+      <!--Oberon-->
+      <group>
+        <translate x="0" y="0" z="14"/>
+        <rotate angle="166" x="0" y="1" z="1"/>           
+        <scale x="0.36" y="0.36" z="0.36"/>
+        <colour r="168" g="168" b="168" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+      <!--Umbriel-->
+      <group>
+        <translate x="0" y="0" z="14"/>
+        <rotate angle="64" x="1" y="1" z="0"/>           
+        <scale x="0.28" y="0.28" z="0.28"/>
+        <colour r="86" g="86" b="86" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+      <!--Ariel-->
+      <group>
+        <translate x="0" y="0" z="14"/>
+        <rotate angle="-120" x="1" y="1" z="0"/>           
+        <scale x="0.24" y="0.24" z="0.24"/>
+        <colour r="156" g="143" b="105" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+      <!--Miranda-->
+      <group>
+        <translate x="0" y="0" z="13"/>
+        <rotate angle="-220" x="1" y="1" z="0"/>           
+        <scale x="0.1" y="0.1" z="0.1"/>
+        <colour r="185" g="185" b="185" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+    </group> 
+  </group>
+  <!--Neptune-->
+  <group>
+    <translate x="0" y="0" z="82"/>
+    <rotate angle="-240" x="0" y="1" z="0"/>
+    <scale x="0.65" y="0.65" z="0.65"/>
+    <colour r="20" g="82" b="228" />
+    <models>
+      <model file="Sphere.3d"/>
+    </models>
+    <!--Main Neptune Moons-->
+    <group>
+      <scale x="0.67" y="0.67" z="0.67"/>
+      <!--Triton-->
+      <group>
+        <translate x="0" y="0" z="-16"/>
+        <rotate angle="56" x="1" y="1" z="0"/>           
+        <scale x="0.25" y="0.25" z="0.25"/>
+        <colour r="183" g="244" b="255" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+      <!--Proteus-->
+      <group>
+        <translate x="0" y="0" z="16"/>
+        <rotate angle="-300" x="1" y="1" z="0"/>           
+        <scale x="0.13" y="0.13" z="0.13"/>
+        <colour r="200" g="200" b="200" />
+        <models>
+          <model file="Sphere.3d"/>
+        </models>
+      </group>
+    </group> 
+  </group>
+</scene>
