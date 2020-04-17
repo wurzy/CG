@@ -20,7 +20,7 @@ using namespace std;
 using namespace tinyxml2;
 
 namespace XMLReader {
-	void xmlReader(string f, vector<Transformations>* transforms);
+	void xmlReader(string f, vector<Transformations>* transforms, unsigned int* nFig);
 }
 
 #endif

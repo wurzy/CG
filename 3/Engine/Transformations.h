@@ -12,6 +12,7 @@
 #ifdef __APPLE__
 #include <GLUT/glut.h>
 #else
+#include <GL/glew.h>
 #include <GL/glut.h>
 #endif
 #define _USE_MATH_DEFINES
@@ -90,30 +91,36 @@ public:
 
 class Model {
 	vector<Point> points;
+	GLuint vboID;
 
 public:
-	Model(vector<Point> p) {
+	Model(vector<Point> p, GLuint id) {
 		this->points = p;
+		vboID = id;
 	}
 
-	void drawModel(float red, float green, float blue) {
+	void prepareModel(GLuint* buffer) {
 		int size = this->points.size();
-		Point p1, p2, p3;
-
-		glColor3f(red, green, blue);
-		glBegin(GL_TRIANGLES);
-		for (int i = 0; i < size; i += 3) { //
-
-			p1 = this->points.at(i);
-			p2 = this->points.at(i + 1);
-			p3 = this->points.at(i + 2);
-
-			glVertex3f(p1.x, p1.y, p1.z);
-			glVertex3f(p2.x, p2.y, p2.z);
-			glVertex3f(p3.x, p3.y, p3.z);
+		float* p = (float*)malloc(sizeof(float) * size * 3); // each Point has 3 floats
+		int i = 0;
+		for (int j = 0; j < size; j++) {
+			p[i] = this->points.at(j).x;
+			p[i+1] = this->points.at(j).y; // unroll Point to floats
+			p[i+2] = this->points.at(j).z;
+			i += 3;
 		}
-		glEnd();
+		glBindBuffer(GL_ARRAY_BUFFER, buffer[vboID]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * size * 3, p ,GL_STATIC_DRAW);
+		free(p);
 	}
+
+	void drawModel(float red, float green, float blue, GLuint* buffer) {
+		glColor3f(red, green, blue);
+		glBindBuffer(GL_ARRAY_BUFFER, buffer[vboID]);
+		glVertexPointer(3, GL_FLOAT, 0, 0);
+		glDrawArrays(GL_TRIANGLES, 0, points.size());
+	}
+
 	void toString() {
 		cout << points.size() << endl;
 	}
@@ -126,6 +133,7 @@ class Transformations {
 	vector<Model*> models; // models num grupo
 	vector<Transformations*> subgroups;
 	float red, green, blue;
+	GLuint* buffer;
 
 public:
 	Transformations() {
@@ -136,6 +144,7 @@ public:
 		this->subgroups = vector<Transformations*>();
 		red = 1.0f;
 		green = blue = 0.0f;
+		buffer = NULL;
 	}
 
 	void addModel(Model* m) {
@@ -165,14 +174,32 @@ public:
 		this->blue = b;
 	}
 
+	void addReferenceBuffer(GLuint* b) {
+		this->buffer = b;
+		for (Transformations* t : this->subgroups) {
+			t->addReferenceBuffer(b); // subgroup references to VBOs
+		}
+	}
+
+	void start() {
+		for (Model* m : this->models) {
+			m->prepareModel(this->buffer);
+		}
+
+		for (Transformations* t : this->subgroups) {
+			t->start(); // subgroup transformations, recursive
+		}
+	}
+
 	void drawAll() {
 		glPushMatrix();
 		if (this->rotate) this->rotate->apply();
 		if (this->translate) this->translate->apply(); // parent transformations
 		if (this->scale) this->scale->apply();
 		
+
 		for (Model* m : this->models) {
-			m->drawModel(red,green,blue);
+			m->drawModel(red,green,blue, this->buffer);
 		}
 
 		for (Transformations* t : this->subgroups) {

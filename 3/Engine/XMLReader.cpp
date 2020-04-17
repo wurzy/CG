@@ -23,15 +23,16 @@ namespace XMLReader {
 		return points;
 	}
 
-	void parseModels(XMLElement* models, Transformations* transforms) {
+	void parseModels(XMLElement* models, Transformations* transforms, unsigned int* nFig) {
 		for (XMLElement* elem = models->FirstChildElement("model"); elem; elem = elem->NextSiblingElement("model")) {
 			string file = elem->Attribute("file");
 			vector<Point> points = readModel(DIR + file);
-			transforms->addModel(new Model(points));
+			transforms->addModel(new Model(points, *nFig));
+			(*nFig)++;
 		}
 	}
 
-	void parseGroup(XMLElement* group, Transformations* transforms) {
+	void parseGroup(XMLElement* group, Transformations* transforms, unsigned int* nFig) {
 		for (XMLElement* elem = group->FirstChildElement(); elem; elem = elem->NextSiblingElement()) { //for each element on group
 			string type = elem->Value();
 			if (type.compare("translate") == 0){ 
@@ -44,12 +45,12 @@ namespace XMLReader {
 				transforms->addScale(new Scale(elem->FloatAttribute("x"), elem->FloatAttribute("y"), elem->FloatAttribute("z")));
 			}
 			else if (type.compare("models") == 0) {
-				parseModels(elem, transforms);
+				parseModels(elem, transforms, nFig);
 			}
 			else if (type.compare("group") == 0) {
 				Transformations* subgroup = new Transformations();
 				transforms->addSubgroup(subgroup);
-				parseGroup(elem, subgroup);
+				parseGroup(elem, subgroup,nFig);
 			}
 			else if (type.compare("colour") == 0) {
 				float red = (elem->IntAttribute("r"))/255.0f;
@@ -62,10 +63,9 @@ namespace XMLReader {
 				cout << "Due to: " << elem->Value() << endl;
 			}
 		}
-
 	}
 	
-	void xmlReader(string f, vector<Transformations>* transforms) {
+	void xmlReader(string f, vector<Transformations>* transforms, unsigned int* nFig) {
 		XMLDocument doc;
 		XMLNode* root;
 
@@ -76,7 +76,7 @@ namespace XMLReader {
 			// for each <group>...</group>
 			for (XMLElement* group = root->FirstChildElement("group"); group; group = group->NextSiblingElement("group")) {
 				t = new Transformations();
-				parseGroup(group, t);
+				parseGroup(group, t, nFig);
 				transforms->push_back(*t);
 			}
 			cout << "Done! Read scene from: " << f << endl;

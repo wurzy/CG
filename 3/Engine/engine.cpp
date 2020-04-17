@@ -9,6 +9,8 @@ bool zoom = false; // to calculate zoom
 string dir = "./files/";
 vector<Transformations>* transformations;
 
+GLuint *figures;
+
 void spherical2Cartesian() {
 	cx = cam_radius * cos(cam_beta) * sin(cam_alpha);
 	cy = cam_radius * sin(cam_beta);
@@ -64,8 +66,23 @@ void renderScene(void) {
 }
 
 void getTransformations(string f) {
+	GLuint nFig = 0;
 	transformations = new vector<Transformations>();
-	xmlReader(f, transformations);
+	vector<Transformations>* updated = new vector<Transformations>();
+
+	xmlReader(f, transformations, &nFig); // nFig is the number of models
+
+	figures = (GLuint*) malloc(sizeof(GLuint) * nFig); 
+
+	glGenBuffers(nFig, figures);
+
+	for (Transformations t : *transformations) {
+		t.addReferenceBuffer(figures);
+		t.start(); 
+		updated->push_back(t); //this is an unneeded step were it implemented correctly
+	}
+	transformations = updated;
+
 	cout << "Scene: " << f << " loaded!" << endl;
 }
 
@@ -141,7 +158,7 @@ void mouseButton(int button, int state, int x, int y) {
 
 }
 
-void initGlut(int argc, char **argv) {
+void _glutInit(int argc, char **argv) {
 	// init GLUT and the window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
@@ -165,12 +182,15 @@ void initGlut(int argc, char **argv) {
 	//glPolygonMode(GL_FRONT_AND_BACK,GL_POINTS);
 }
 
-void initVBO() {
-
+void _initGlew() {
+	glewInit();
+	glEnableClientState(GL_VERTEX_ARRAY);
 }
 
 int main(int argc, char **argv) {
-	initGlut(argc,argv);
+	_glutInit(argc,argv);
+	_initGlew();
+
 	getTransformations(dir + argv[1]);
 	spherical2Cartesian();
 // enter GLUT's main cycle
