@@ -365,6 +365,186 @@ void drawRing(float rc, float ro, int sides, int rings, string f) {
 	file.close();
 }
 
+//------------------------------------------NEW CODE-------------------------------------------
+
+void transpose(float* a, float* b) { // apenas para 4x4
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			b[4 * i + j] = a[4 * j + i];
+		}
+	}
+}
+
+//multiplica qualquer matriz x[a][c] * y[c][b] = res [a][b]
+void multMatrix(float* m1, float* m2, float* res, int a, int b, int c) {
+	for (int i = 0; i < a; i++) {
+		for (int j = 0; j < b; j++) {
+			res[4 * i + j] = 0;
+			for (int k = 0; k < c; k++) {
+				if (a == 1 && b == 1) { res[4 * i + j] += m1[4 * i + k] * m2[4 * j + k]; }
+				else { res[4 * i + j] += m1[4 * i + k] * m2[4 * k + j]; }
+			}
+		}
+	}
+}
+
+void bezierPatches(float t, float v, int* indicesCP, float** valuesCP, float* coord) {
+
+	float cpX[4][4], cpY[4][4], cpZ[4][4];
+	float res[1][4], resX[1][4], resY[1][4], resZ[1][4];
+	float resTX[1][4], resTY[1][4], resTZ[1][4];
+	float x[1], y[1], z[1];
+
+	float U[1][4] = { { pow(t,3) , pow(t,2) , t , 1 } };
+
+	float M[4][4] = { {-1.0f,  3.0f, -3.0f,  1.0f},
+					  { 3.0f, -6.0f,  3.0f,  0.0f},
+					  {-3.0f,  3.0f,  0.0f,  0.0f},
+					  { 1.0f,  0.0f,  0.0f,  0.0f} };
+
+	float MT[4][4];
+	transpose(*M, *MT);
+
+	float V[4][1] = { {pow(v,3)}, {pow(v,2)}, {v}, {1} };
+
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 4; j++) {
+			cpX[i][j] = valuesCP[indicesCP[i * 4 + j]][0];
+			cpY[i][j] = valuesCP[indicesCP[i * 4 + j]][1];;
+			cpZ[i][j] = valuesCP[indicesCP[i * 4 + j]][2];;
+		}
+	}
+
+
+	// Formula -> coord = U * M * P * MT * V
+	//agora que temos as componentes todas da formula estamos prontos para calcular
+
+	// aXc * cXb
+	//1X4 * 4X4  a=1;c=4;b=4
+	multMatrix(*U, *M, *res, 1, 4, 4);
+
+	//1X4 * 4X4  a=1;c=4;b=4
+	multMatrix(*res, *cpX, *resX, 1, 4, 4);
+	multMatrix(*res, *cpY, *resY, 1, 4, 4);
+	multMatrix(*res, *cpZ, *resZ, 1, 4, 4);
+
+	//1X4 * 4X4  a=1;c=4;b=4
+	multMatrix(*resX, *MT, *resTX, 1, 4, 4);
+	multMatrix(*resY, *MT, *resTY, 1, 4, 4);
+	multMatrix(*resZ, *MT, *resTZ, 1, 4, 4);
+
+	//1X4 * 4X1  a=1;c=4;b=1
+	multMatrix(*resTX, *V, x, 1, 1, 4);
+	multMatrix(*resTY, *V, y, 1, 1, 4);
+	multMatrix(*resTZ, *V, z, 1, 1, 4);
+
+	coord[0] = x[0]; coord[1] = y[0]; coord[2] = z[0];
+}
+
+//tesselation -> numero de divisoes
+void drawBezier(string f1, string f2, int tesselation) {
+	int numPatch = 0, numCP = 0, posicao = 0;
+	string linha;
+	int** indicesCP;
+	float** valuesCP;
+
+
+	ifstream readFile(dir + f1);
+	ofstream writeFile(dir + f2);
+
+	if (readFile.is_open()) {
+
+		// primeira linha contém o numero de patches
+		getline(readFile, linha);
+		numPatch = stoi(linha);
+
+		//as seguintes 'numPatch' linhas contém informação dos control points
+		//cada linha terá 16 indices
+		//para guardar a info usamos uma matriz -> indicesCP[numPatch][16]
+		indicesCP = new int* [numPatch];
+		for (int i = 0; i < numPatch; i++) {
+			indicesCP[i] = new int[16];
+			getline(readFile, linha);
+			char* arrayLinha = strdup(linha.c_str());
+			char* point = strtok(arrayLinha, ", ");
+			for (int j = 0; point != NULL; j++) {
+				indicesCP[i][j] = stoi(point);
+				point = strtok(NULL, ", ");
+			}
+		}
+
+		// esta linha contém o numero de control points
+		getline(readFile, linha);
+		numCP = stoi(linha);
+
+		//as seguintes 'numCP' linhas contém as coordenadas dos control points
+		//cada linha terá 3 coordenadas
+		//para guardar a info usamos uma matriz -> valuesCP[numCP][3]
+		valuesCP = new float* [numCP];
+		for (int i = 0; i < numCP; i++) {
+			valuesCP[i] = new float[3];
+			getline(readFile, linha);
+			char* arrayLinha = strdup(linha.c_str());
+			char* point = strtok(arrayLinha, ", ");
+			for (int j = 0; point != NULL; j++) {
+				valuesCP[i][j] = stof(point);
+				point = strtok(NULL, ", ");
+			}
+		}
+
+		//com a informação gravada em memoria, falta agora calcular os pontos através de Bezier
+		//e guardar esses em ficheiro
+
+		if (writeFile.is_open()) {
+
+			float incremento = 1.0 / tesselation;
+			float coord0[3], coord1[3], coord2[3], coord3[3];
+
+			/*pontos   0 . ---- . 3
+						 |      |
+						 |      |
+					   1 . ---- . 2
+			*/
+
+			// v-> horizontal / u-> vertical
+
+			for (int i = 0; i < numPatch; i++) {
+				for (float u = 0; u < 1; u += incremento) {
+					for (float v = 0; v < 1; v += incremento) {
+						float u1 = u + incremento;
+						float v1 = v + incremento;
+
+						bezierPatches(u, v, indicesCP[i], valuesCP, coord0);
+						bezierPatches(u, v1, indicesCP[i], valuesCP, coord1);
+						bezierPatches(u1, v1, indicesCP[i], valuesCP, coord2);
+						bezierPatches(u1, v, indicesCP[i], valuesCP, coord3);
+
+
+						writeFile << coord0[0] << " " << coord0[1] << " " << coord0[2] << endl;
+						writeFile << coord1[0] << " " << coord1[1] << " " << coord1[2] << endl;
+						writeFile << coord2[0] << " " << coord2[1] << " " << coord2[2] << endl;
+
+						writeFile << coord0[0] << " " << coord0[1] << " " << coord0[2] << endl;
+						writeFile << coord2[0] << " " << coord2[1] << " " << coord2[2] << endl;
+						writeFile << coord3[0] << " " << coord3[1] << " " << coord3[2] << endl;
+
+
+					}
+				}
+			}
+		}
+		else {
+			cout << "ERROR: Can't write file!" << endl;
+		}
+	}
+	else {
+		cout << "ERROR: Can't read file!" << endl;
+	}
+	readFile.close();
+	writeFile.close();
+}
+
+
 void parseInput(int argc, char** argv) {
 	if (string(argv[1]) == "sphere") {
 		if (argc != 6) {
@@ -428,6 +608,15 @@ void parseInput(int argc, char** argv) {
 		else {
 			cout << "OK! Generating Ring." << endl;
 			drawRing(atof(argv[2]), atof(argv[3]), atoi(argv[4]), atoi(argv[5]),argv[6]);
+		}
+	}
+	else if (string(argv[1]) == "bezier") {
+		if (argc != 5) {
+			cout << "ERROR" << endl;
+		}
+		else {
+			cout << "OK! Generating Bezier." << endl;
+			drawBezier(argv[2], argv[3], atoi(argv[4]));
 		}
 	}
 	else {
