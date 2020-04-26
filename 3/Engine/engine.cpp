@@ -7,7 +7,7 @@ bool start = true; // to calculate first iteration of lastX lastY
 bool zoom = false; // to calculate zoom
 
 string dir = "./files/";
-vector<Transformations>* transformations;
+vector<Transformations*>* transformations;
 
 GLuint *figures;
 
@@ -44,8 +44,8 @@ void changeSize(int w, int h) {
 }
 
 void draw(){
-	for (Transformations t : *transformations) {
-		t.drawAll();
+	for (Transformations* t : *transformations) {
+		t->drawAll();
 	}
 }
 
@@ -67,21 +67,18 @@ void renderScene(void) {
 
 void getTransformations(string f) {
 	GLuint nFig = 0;
-	transformations = new vector<Transformations>();
-	vector<Transformations>* updated = new vector<Transformations>();
+	transformations = new vector<Transformations*>();
 
 	xmlReader(f, transformations, &nFig); // nFig is the number of models
 
-	figures = (GLuint*) malloc(sizeof(GLuint) * nFig); 
+	figures = new GLuint[nFig]();
 
 	glGenBuffers(nFig, figures);
 
-	for (Transformations t : *transformations) {
-		t.addReferenceBuffer(figures);
-		t.start(); 
-		updated->push_back(t); //this is an unneeded step were it implemented correctly
+	for (Transformations* t : *transformations) {
+		t->addReferenceBuffer(figures);
+		t->start(); 
 	}
-	transformations = updated;
 
 	cout << "Scene: " << f << " loaded!" << endl;
 }

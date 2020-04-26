@@ -32,11 +32,30 @@ namespace XMLReader {
 		}
 	}
 
+	void parseTranslate(XMLElement* translate, Transformations* transforms) {
+		if (translate->FindAttribute("time")) {
+			float time = translate->FloatAttribute("time");
+			vector<Point> controlPoints;
+			for (XMLElement* controlPoint = translate->FirstChildElement("point"); controlPoint; controlPoint = controlPoint->NextSiblingElement("point")) {
+				Point p;
+				p.x = controlPoint->FloatAttribute("x");
+				p.y = controlPoint->FloatAttribute("y");
+				p.z = controlPoint->FloatAttribute("z");
+				controlPoints.push_back(p);
+			}
+			transforms->addTranslate(new Translate(controlPoints,time));
+		}
+		else {
+			transforms->addTranslate(new Translate(translate->FloatAttribute("x"), translate->FloatAttribute("y"), translate->FloatAttribute("z")));
+		}
+	}
+
 	void parseGroup(XMLElement* group, Transformations* transforms, unsigned int* nFig) {
 		for (XMLElement* elem = group->FirstChildElement(); elem; elem = elem->NextSiblingElement()) { //for each element on group
 			string type = elem->Value();
 			if (type.compare("translate") == 0){ 
-				transforms->addTranslate(new Translate(elem->FloatAttribute("x"), elem->FloatAttribute("y"), elem->FloatAttribute("z")));
+				//transforms->addTranslate(new Translate(elem->FloatAttribute("x"), elem->FloatAttribute("y"), elem->FloatAttribute("z")));
+				parseTranslate(elem, transforms);
 			}
 			else if (type.compare("rotate") == 0) {
 				transforms->addRotate(new Rotate(elem->FloatAttribute("angle"),elem->FloatAttribute("x"), elem->FloatAttribute("y"), elem->FloatAttribute("z")));
@@ -65,7 +84,7 @@ namespace XMLReader {
 		}
 	}
 	
-	void xmlReader(string f, vector<Transformations>* transforms, unsigned int* nFig) {
+	void xmlReader(string f, vector<Transformations*>* transforms, unsigned int* nFig) {
 		XMLDocument doc;
 		XMLNode* root;
 
@@ -77,7 +96,7 @@ namespace XMLReader {
 			for (XMLElement* group = root->FirstChildElement("group"); group; group = group->NextSiblingElement("group")) {
 				t = new Transformations();
 				parseGroup(group, t, nFig);
-				transforms->push_back(*t);
+				transforms->push_back(t);
 			}
 			cout << "Done! Read scene from: " << f << endl;
 		}

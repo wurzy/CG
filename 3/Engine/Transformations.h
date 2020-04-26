@@ -46,19 +46,44 @@ public:
 
 class Translate {
 public:
+	bool animated;
 	float x, y, z;
+	vector<Point> controlpoints;
+	float time, current;
+
 	Translate() {
 		this->x = this->y = this->z = 0;
+		this->animated = false;
+		this->current = time = 0;
 	}
 
 	Translate(float cx, float cy, float cz) {
+		this->animated = false;
 		this->x = cx;
 		this->y = cy;
 		this->z = cz;
+		this->current = time = 0;
+	}
+
+	Translate(vector<Point> controlPoints, float t) {
+		this->animated = true;
+		this->current = 0;
+		this->time = t;
+		this->controlpoints = controlPoints;
 	}
 
 	void apply() {
-		glTranslatef(this->x, this->y, this->z);
+		if (!this->animated) {
+			glTranslatef(this->x, this->y, this->z);
+		}
+		else {
+			if (this->controlpoints.size() >= 4) {
+				// do catmull
+			}
+			else {
+				cout << "ERROR. Minimum of 4 points required. Aborting this transformation..." << endl;
+			}
+		}
 	}
 
 	void toString() {
@@ -101,17 +126,18 @@ public:
 
 	void prepareModel(GLuint* buffer) {
 		int size = this->points.size();
-		float* p = (float*)malloc(sizeof(float) * size * 3); // each Point has 3 floats
-		int i = 0;
-		for (int j = 0; j < size; j++) {
-			p[i] = this->points.at(j).x;
-			p[i+1] = this->points.at(j).y; // unroll Point to floats
-			p[i+2] = this->points.at(j).z;
-			i += 3;
+		float* p = new float[size * 3];
+		if (p) {
+			int i = 0;
+			for (int j = 0; j < size; j++) {
+				p[i] = this->points.at(j).x;
+				p[i + 1] = this->points.at(j).y; // unroll Point to floats
+				p[i + 2] = this->points.at(j).z;
+				i += 3;
+			}
+			glBindBuffer(GL_ARRAY_BUFFER, buffer[vboID]);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * size * 3, p, GL_STATIC_DRAW);
 		}
-		glBindBuffer(GL_ARRAY_BUFFER, buffer[vboID]);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * size * 3, p ,GL_STATIC_DRAW);
-		free(p);
 	}
 
 	void drawModel(float red, float green, float blue, GLuint* buffer) {
@@ -127,10 +153,10 @@ public:
 };
 
 class Transformations {
-	Translate* translate; // c++ pointers to objects :/ 
+	Translate* translate; 
 	Rotate* rotate;
 	Scale* scale;
-	vector<Model*> models; // models num grupo
+	vector<Model*> models; // models in a group
 	vector<Transformations*> subgroups;
 	float red, green, blue;
 	GLuint* buffer;
