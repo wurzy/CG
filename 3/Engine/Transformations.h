@@ -2,6 +2,7 @@
 #ifndef __MY__TRANSFORMS__
 #define __MY__TRANSFORMS__
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <fstream>
 #include <string>
@@ -17,6 +18,7 @@
 #endif
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "catmull-rom.h"
 
 using namespace std;
 
@@ -47,47 +49,70 @@ public:
 class Translate {
 public:
 	bool animated;
+	bool traced;
 	float x, y, z;
-	vector<Point> controlpoints;
-	float time, current;
+	CatmullRom* cr;
 
 	Translate() {
+		this->cr = NULL;
 		this->x = this->y = this->z = 0;
 		this->animated = false;
-		this->current = time = 0;
+		this->traced = false;
 	}
 
 	Translate(float cx, float cy, float cz) {
+		this->cr = NULL;
 		this->animated = false;
+		this->traced = false;
 		this->x = cx;
 		this->y = cy;
 		this->z = cz;
-		this->current = time = 0;
 	}
 
-	Translate(vector<Point> controlPoints, float t) {
+	Translate(vector<Point> controlPoints, float t, int seg) {
+		this->x = this->y = this->z = 0;
 		this->animated = true;
-		this->current = 0;
-		this->time = t;
-		this->controlpoints = controlPoints;
+		this->traced = false;
+		this->cr = new CatmullRom(controlPoints, t, seg);
+	}
+
+	Translate(vector<Point> controlPoints, float t, int seg, GLuint id) {
+		this->x = this->y = this->z = 0;
+		this->animated = true;
+		this->traced = true;
+		this->cr = new CatmullRom(controlPoints, t, seg, id);
+	}
+
+	void prepareTranslate(GLuint* b) {
+		if (this->traced) {
+			this->cr->addReferenceBuffer(b);
+			this->cr->prepareCurve();
+		}
 	}
 
 	void apply() {
 		if (!this->animated) {
 			glTranslatef(this->x, this->y, this->z);
 		}
+		else if (this->cr->isValid()) {
+			if (traced) {
+				cr->traceCurve();
+			}
+			cr->animatedTranslate();
+		}
 		else {
-			if (this->controlpoints.size() >= 4) {
-				// do catmull
-			}
-			else {
-				cout << "ERROR. Minimum of 4 points required. Aborting this transformation..." << endl;
-			}
+			cout << "ERROR. Minimum of 4 points required. Aborting this transformation..." << endl;
 		}
 	}
 
+	// fluff, only useful for debugging
 	void toString() {
-		cout << "Translate: " << x << " " << y << " " << z << endl;
+		if (this->animated) {
+			cout << "Animated Translate" << endl;
+		}
+		else {
+			cout << "Translate: " << x << " " << y << " " << z << endl;
+		}
 	}
 };
 
@@ -127,17 +152,15 @@ public:
 	void prepareModel(GLuint* buffer) {
 		int size = this->points.size();
 		float* p = new float[size * 3];
-		if (p) {
-			int i = 0;
-			for (int j = 0; j < size; j++) {
-				p[i] = this->points.at(j).x;
-				p[i + 1] = this->points.at(j).y; // unroll Point to floats
-				p[i + 2] = this->points.at(j).z;
-				i += 3;
-			}
-			glBindBuffer(GL_ARRAY_BUFFER, buffer[vboID]);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(float) * size * 3, p, GL_STATIC_DRAW);
+		int i = 0;
+		for (int j = 0; j < size; j++) {
+			p[i] = this->points.at(j).x;
+			p[i + 1] = this->points.at(j).y; // unroll Point to floats
+			p[i + 2] = this->points.at(j).z;
+			i += 3;
 		}
+		glBindBuffer(GL_ARRAY_BUFFER, buffer[vboID]);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * size * 3, p, GL_STATIC_DRAW);
 	}
 
 	void drawModel(float red, float green, float blue, GLuint* buffer) {
@@ -212,6 +235,8 @@ public:
 			m->prepareModel(this->buffer);
 		}
 
+		if(this->translate) this->translate->prepareTranslate(this->buffer);
+
 		for (Transformations* t : this->subgroups) {
 			t->start(); // subgroup transformations, recursive
 		}
@@ -240,13 +265,13 @@ public:
 		if(rotate) rotate->toString();
 		if (scale) scale->toString();
 		
-		cout << "Colour of these Models: " << red << " " << green << " " << blue << endl;
+		cout << "|| Colour of these Models: " << red << " " << green << " " << blue << endl;
 		
-		cout << "Models: " << endl;
+		cout << "%% Models: " << endl;
 		for (Model* m : models) {
 			m->toString();
 		}
-		cout << "End models. " << endl;
+		cout << "%% End models. " << endl;
 		cout << "//Subgroups//" << endl;
 		for (Transformations* t : subgroups) {
 			t->toString();

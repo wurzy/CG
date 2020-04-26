@@ -67,9 +67,10 @@ void renderScene(void) {
 
 void getTransformations(string f) {
 	GLuint nFig = 0;
+	//GLuint nTraces = 0;
 	transformations = new vector<Transformations*>();
 
-	xmlReader(f, transformations, &nFig); // nFig is the number of models
+	xmlReader(f, transformations, &nFig); // nFig is the number of models and traces
 
 	figures = new GLuint[nFig]();
 
@@ -166,7 +167,7 @@ void _glutInit(int argc, char **argv) {
 	// Required callback registry 
 	glutDisplayFunc(renderScene);
 	glutReshapeFunc(changeSize);
-	//glutIdleFunc(renderScene);
+	glutIdleFunc(renderScene);
 
 	// put here the registration of the keyboard callbacks
 	//glutKeyboardFunc(processKeys);

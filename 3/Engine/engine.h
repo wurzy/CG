@@ -1,4 +1,7 @@
 #pragma once
+#ifndef __MY__ENGINE__
+#define __MY__ENGINE__
+
 #include <stdlib.h> //clash com GLUT
 #include <stdio.h>
 #include <fstream>
@@ -22,3 +25,5 @@
 
 using namespace XMLReader;
 using namespace tinyxml2;
+
+#endif

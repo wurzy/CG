@@ -28,13 +28,23 @@ namespace XMLReader {
 			string file = elem->Attribute("file");
 			vector<Point> points = readModel(DIR + file);
 			transforms->addModel(new Model(points, *nFig));
+			//cout << "m id: " << *nFig << endl;
 			(*nFig)++;
 		}
 	}
 
-	void parseTranslate(XMLElement* translate, Transformations* transforms) {
+	void parseTranslate(XMLElement* translate, Transformations* transforms, unsigned int* nFig) {
 		if (translate->FindAttribute("time")) {
 			float time = translate->FloatAttribute("time");
+			int seg;
+			bool traced = false;
+			if (translate->FindAttribute("trace")) { // does it have traced lines
+				seg = translate->Int64Attribute("trace");
+				traced = true;
+			}
+			else {
+				seg = 0;
+			}
 			vector<Point> controlPoints;
 			for (XMLElement* controlPoint = translate->FirstChildElement("point"); controlPoint; controlPoint = controlPoint->NextSiblingElement("point")) {
 				Point p;
@@ -43,7 +53,14 @@ namespace XMLReader {
 				p.z = controlPoint->FloatAttribute("z");
 				controlPoints.push_back(p);
 			}
-			transforms->addTranslate(new Translate(controlPoints,time));
+			if (traced) {
+				transforms->addTranslate(new Translate(controlPoints, time, seg, *nFig));
+				//cout << "t id: " << *nFig << endl;
+				(*nFig)++;
+			}
+			else {
+				transforms->addTranslate(new Translate(controlPoints, time, seg));
+			}
 		}
 		else {
 			transforms->addTranslate(new Translate(translate->FloatAttribute("x"), translate->FloatAttribute("y"), translate->FloatAttribute("z")));
@@ -54,8 +71,7 @@ namespace XMLReader {
 		for (XMLElement* elem = group->FirstChildElement(); elem; elem = elem->NextSiblingElement()) { //for each element on group
 			string type = elem->Value();
 			if (type.compare("translate") == 0){ 
-				//transforms->addTranslate(new Translate(elem->FloatAttribute("x"), elem->FloatAttribute("y"), elem->FloatAttribute("z")));
-				parseTranslate(elem, transforms);
+				parseTranslate(elem, transforms,nFig);
 			}
 			else if (type.compare("rotate") == 0) {
 				transforms->addRotate(new Rotate(elem->FloatAttribute("angle"),elem->FloatAttribute("x"), elem->FloatAttribute("y"), elem->FloatAttribute("z")));
