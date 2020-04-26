@@ -78,8 +78,7 @@ namespace XMLReader {
 				transforms->addRGB(red, green, blue);
 			}
 			else {
-				cout << "ERROR OCCURRED ON GROUP" << endl;
-				cout << "Due to: " << elem->Value() << endl;
+				cout << "ERROR. Group has invalid element:" << elem->Value() << ". Skipping element..."<< endl;
 			}
 		}
 	}
