@@ -15,11 +15,7 @@
 #endif
 
 using namespace std;
-/**
-NOTES: 
-	This class was created based on the Computer Graphics scripts that were provided by the teachers, related to cubic curves. 
-	A large sum of its code is created by them, re-implemented by us to fit our needs.
-*/
+
 class CatmullRom {
 	int points;
 	vector<Point> segPoints;
