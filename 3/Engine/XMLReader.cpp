@@ -28,7 +28,6 @@ namespace XMLReader {
 			string file = elem->Attribute("file");
 			vector<Point> points = readModel(DIR + file);
 			transforms->addModel(new Model(points, *nFig));
-			//cout << "m id: " << *nFig << endl;
 			(*nFig)++;
 		}
 	}
