@@ -24,9 +24,12 @@ using namespace std;
 
 class Rotate {
 public:
+	bool animated;
+	float time;
 	float ang, x, y, z;
 	Rotate() {
-		this->x = this->y = this->z = this->ang = 0;
+		this->x = this->y = this->z = this->ang = this->time = 0;
+		this->animated = false;
 	}
 
 	Rotate(float ang, float cx, float cy, float cz) {
@@ -34,14 +37,24 @@ public:
 		this->y = cy;
 		this->z = cz;
 		this->ang = ang;
+		this->time = 0;
+		this->animated = false;
+	}
+
+	Rotate(float t, float cx, float cy, float cz, bool a) { // bool is just to make the constructors different.
+		this->x = cx;
+		this->y = cy;
+		this->z = cz;
+		this->ang = 0;
+		this->time = t * 1000; // seconds to milliseconds
+		this->animated = a;
 	}
 	
 	void apply() {
+		if (this->animated) {
+			this->ang = (glutGet(GLUT_ELAPSED_TIME) / this->time) * 360; // current angle related to elapsed time
+		}
 		glRotatef(this->ang, this->x, this->y, this->z);
-	}
-
-	void toString() {
-		cout << "Rotate" << ang << " " << x << " " << y << " " << z << endl;
 	}
 };
 
@@ -104,16 +117,6 @@ public:
 			cout << "ERROR. Minimum of 4 points required. Aborting this transformation..." << endl;
 		}
 	}
-
-	// fluff, only useful for debugging
-	void toString() {
-		if (this->animated) {
-			cout << "Animated Translate" << endl;
-		}
-		else {
-			cout << "Translate: " << x << " " << y << " " << z << endl;
-		}
-	}
 };
 
 
@@ -132,10 +135,6 @@ public:
 
 	void apply() {
 		glScalef(this->x, this->y, this->z);
-	}
-
-	void toString() {
-		cout << "Scale" << x << " " << y << " " << z << endl;
 	}
 };
 
@@ -169,10 +168,6 @@ public:
 		glVertexPointer(3, GL_FLOAT, 0, 0);
 		glDrawArrays(GL_TRIANGLES, 0, points.size());
 	}
-
-	void toString() {
-		cout << points.size() << endl;
-	}
 };
 
 class Transformations {
@@ -197,7 +192,6 @@ public:
 	}
 
 	void addModel(Model* m) {
-		//points.insert(this->points.end(),p.begin(),p.end());
 		models.push_back(m);
 	}
 
@@ -244,10 +238,9 @@ public:
 
 	void drawAll() {
 		glPushMatrix();
-		if (this->rotate) this->rotate->apply();
 		if (this->translate) this->translate->apply(); // parent transformations
+		if (this->rotate) this->rotate->apply();
 		if (this->scale) this->scale->apply();
-		
 
 		for (Model* m : this->models) {
 			m->drawModel(red,green,blue, this->buffer);
@@ -258,25 +251,6 @@ public:
 		}
 		glPopMatrix();
 
-	}
-
-	void toString() {
-		if(translate) translate->toString();
-		if(rotate) rotate->toString();
-		if (scale) scale->toString();
-		
-		cout << "|| Colour of these Models: " << red << " " << green << " " << blue << endl;
-		
-		cout << "%% Models: " << endl;
-		for (Model* m : models) {
-			m->toString();
-		}
-		cout << "%% End models. " << endl;
-		cout << "//Subgroups//" << endl;
-		for (Transformations* t : subgroups) {
-			t->toString();
-		}
-		cout << "//End Subgroups//" << endl;
 	}
 };
 

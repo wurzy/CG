@@ -167,7 +167,6 @@ public:
 		normalize(z);
 		cross(z, deriv, up);
 		normalize(up);
-
 		glTranslatef(pos[0], pos[1], pos[2]); // put the model in place
 		buildRotMatrix(deriv, up, z, *m); // build the rotation matrix
 		transpose(*m, *m_transpose); // transpose the resulting rotation matrix

@@ -33,6 +33,23 @@ namespace XMLReader {
 		}
 	}
 
+	void parseRotate(XMLElement* rotate, Transformations* transforms) {
+		float x, y, z;
+		x = rotate->FloatAttribute("x");
+		y = rotate->FloatAttribute("y");
+		z = rotate->FloatAttribute("z");
+		Rotate* r;
+		if (rotate->FindAttribute("time")) {
+			float time = rotate->FloatAttribute("time");
+			r = new Rotate(time, x, y, z, true);
+		}
+		else {
+			float ang = rotate->FloatAttribute("angle");
+			r = new Rotate(ang, x, y, z);
+		}
+		transforms->addRotate(r);
+	}
+
 	void parseTranslate(XMLElement* translate, Transformations* transforms, unsigned int* nFig) {
 		if (translate->FindAttribute("time")) {
 			float time = translate->FloatAttribute("time");
@@ -74,7 +91,7 @@ namespace XMLReader {
 				parseTranslate(elem, transforms,nFig);
 			}
 			else if (type.compare("rotate") == 0) {
-				transforms->addRotate(new Rotate(elem->FloatAttribute("angle"),elem->FloatAttribute("x"), elem->FloatAttribute("y"), elem->FloatAttribute("z")));
+				parseRotate(elem, transforms);
 			}
 			else if (type.compare("scale") == 0) {
 				transforms->addScale(new Scale(elem->FloatAttribute("x"), elem->FloatAttribute("y"), elem->FloatAttribute("z")));
