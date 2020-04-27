@@ -180,14 +180,14 @@ void _glutInit(int argc, char **argv) {
 	//glPolygonMode(GL_FRONT_AND_BACK,GL_POINTS);
 }
 
-void _initGlew() {
+void _glewInit() {
 	glewInit();
 	glEnableClientState(GL_VERTEX_ARRAY);
 }
 
 int main(int argc, char **argv) {
 	_glutInit(argc,argv);
-	_initGlew();
+	_glewInit();
 
 	getTransformations(dir + argv[1]);
 	spherical2Cartesian();
