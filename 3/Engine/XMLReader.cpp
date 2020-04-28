@@ -71,7 +71,6 @@ namespace XMLReader {
 			}
 			if (traced) {
 				transforms->addTranslate(new Translate(controlPoints, time, seg, *nFig));
-				//cout << "t id: " << *nFig << endl;
 				(*nFig)++;
 			}
 			else {

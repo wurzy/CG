@@ -178,6 +178,7 @@ class Transformations {
 	vector<Transformations*> subgroups;
 	float red, green, blue;
 	GLuint* buffer;
+	bool axis;
 
 public:
 	Transformations() {
@@ -189,6 +190,7 @@ public:
 		red = 1.0f;
 		green = blue = 0.0f;
 		buffer = NULL;
+		axis = false;
 	}
 
 	void addModel(Model* m) {
@@ -236,11 +238,42 @@ public:
 		}
 	}
 
+	void enableAxis() {
+		this->axis = true;
+	}
+
+	void disableAxis() {
+		this->axis = false;
+	}
+
 	void drawAll() {
 		glPushMatrix();
 		if (this->translate) this->translate->apply(); // parent transformations
 		if (this->rotate) this->rotate->apply();
 		if (this->scale) this->scale->apply();
+
+		if (axis) {
+			glPushMatrix();
+			glBegin(GL_LINES);
+			// X axis in red
+			glColor3f(1.0f, 0.0f, 0.0f);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(10.0f, 0.0f, 0.0f);
+			// Y Axis in green
+			glColor3f(0.0f, 1.0f, 0.0f);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(0.0f, 10.0f, 0.0f);
+
+			// Z Axis in green
+			glColor3f(0.0f, 0.0f, 1.0f);
+			glVertex3f(0.0f, 0.0f, 0.0f);
+			glVertex3f(0.0f, 0.0f, 10.0f);
+
+			glColor3f(1.0f, 1.0f, 1.0f);
+			glEnd();
+			glPopMatrix();
+		}
+
 
 		for (Model* m : this->models) {
 			m->drawModel(red,green,blue, this->buffer);

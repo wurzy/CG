@@ -1,4 +1,5 @@
 #include "engine.h"
+//camera
 float cam_radius = 200.0f; 
 float cam_alpha = 0, cam_beta = 0;
 float cx, cy, cz; // camera as a sphere of radius r
@@ -6,15 +7,38 @@ float lastX, lastY; // last position on window
 bool start = true; // to calculate first iteration of lastX lastY
 bool zoom = false; // to calculate zoom
 
+//fps
+int frame = 0;
+int timebase = 0;
+
+//toggles
+bool toggleAxis = false;
+
+//transformations
 string dir = "./files/";
 vector<Transformations*>* transformations;
 
+//vbo
 GLuint *figures;
 
 void spherical2Cartesian() {
 	cx = cam_radius * cos(cam_beta) * sin(cam_alpha);
 	cy = cam_radius * sin(cam_beta);
 	cz = cam_radius * cos(cam_beta) * cos(cam_alpha);
+}
+
+void showFPS() {
+	frame++;
+	float fps;
+	int time = glutGet(GLUT_ELAPSED_TIME);
+	char s[64];
+	if (time - timebase > 1000) {
+		fps = frame * 1000.0 / (time - timebase);
+		timebase = time;
+		frame = 0;
+		sprintf(s, "FPS: %2.f", fps);
+		glutSetWindowTitle(s);
+	}
 }
 
 
@@ -60,6 +84,8 @@ void renderScene(void) {
 		0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f);
 	
+	showFPS();
+
 	draw();
 
 	glutSwapBuffers();
@@ -84,25 +110,35 @@ void getTransformations(string f) {
 	cout << "Scene: " << f << " loaded!" << endl;
 }
 
-/*
+
 void processKeys(unsigned char c, int xx, int yy) {
 	switch (c) {
-	case 'w':
-		cam_beta += 0.1f;
-		if (cam_beta > 1.5f)
-			cam_beta = 1.5f;
+	case 'a': // as in axis
+		if (toggleAxis) {
+			for (Transformations* t : *transformations) {
+				t->disableAxis();
+			}
+			toggleAxis = false;
+		}
+		else {
+			for (Transformations* t : *transformations) {
+				t->enableAxis();
+			}
+			toggleAxis = true;
+		}
 		break;
-	case 's':
-		cam_beta -= 0.1f;
-		if (cam_beta < -1.5f)
-			cam_beta = -1.5f;
+	case 's': // show geometry
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		break;
-
+	case 'd':
+		glPolygonMode(GL_FRONT, GL_FILL);
+		break;
+	case 'f': // show geometry
+		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+		break;
 	}
-	spherical2Cartesian();
 	glutPostRedisplay();
 }
-*/
 
 void mouseMove(int x, int y) {
 	if (start) {
@@ -170,7 +206,7 @@ void _glutInit(int argc, char **argv) {
 	glutIdleFunc(renderScene);
 
 	// put here the registration of the keyboard callbacks
-	//glutKeyboardFunc(processKeys);
+	glutKeyboardFunc(processKeys);
 	glutMouseFunc(mouseButton);
 	glutMotionFunc(mouseMove);
 
