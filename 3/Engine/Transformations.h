@@ -89,11 +89,11 @@ public:
 		this->cr = new CatmullRom(controlPoints, t, seg);
 	}
 
-	Translate(vector<Point> controlPoints, float t, int seg, GLuint id) {
+	Translate(vector<Point> controlPoints, float t, int seg, GLuint id, float* rgb) {
 		this->x = this->y = this->z = 0;
 		this->animated = true;
 		this->traced = true;
-		this->cr = new CatmullRom(controlPoints, t, seg, id);
+		this->cr = new CatmullRom(controlPoints, t, seg, id, rgb);
 	}
 
 	void prepareTranslate(GLuint* b) {

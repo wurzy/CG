@@ -70,7 +70,16 @@ namespace XMLReader {
 				controlPoints.push_back(p);
 			}
 			if (traced) {
-				transforms->addTranslate(new Translate(controlPoints, time, seg, *nFig));
+				float* rgb = new float[3]();
+				if (translate->FindAttribute("r") && translate->FindAttribute("g") && translate->FindAttribute("b")) {
+					rgb[0] = translate->FloatAttribute("r") / 255.0f;
+					rgb[1] = translate->FloatAttribute("g") / 255.0f;
+					rgb[2] = translate->FloatAttribute("b") / 255.0f;
+				}
+				else {
+					rgb[2] = rgb[1] = rgb[0] = 1.0f;
+				}
+				transforms->addTranslate(new Translate(controlPoints, time, seg, *nFig, rgb));
 				(*nFig)++;
 			}
 			else {

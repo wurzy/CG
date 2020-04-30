@@ -29,6 +29,7 @@ class CatmullRom {
 	float up[3] = { 0,1,0 };
 
 	int segments;
+	float* rgb;
 	GLuint vboID;
 	GLuint* buffer;
 
@@ -141,14 +142,16 @@ public:
 		this->animationTime = time * 1000; // seconds to milliseconds
 		this->segments = seg;
 		this->vboID = 0;
+		this->rgb = NULL;
 	}
 
-	CatmullRom(vector<Point> p, float time, int seg, GLuint id) {
+	CatmullRom(vector<Point> p, float time, int seg, GLuint id, float* color) {
 		this->segPoints = p;
 		this->points = p.size();
 		this->animationTime = time * 1000; // seconds to milliseconds
 		this->segments = seg;
 		this->vboID = id;
+		this->rgb = color;
 	}
 
 	void addReferenceBuffer(GLuint* b) {
@@ -162,15 +165,15 @@ public:
 
 		getGlobalCatmullRomPoint(gt, pos, deriv);
 
-		normalize(deriv);
-		cross(deriv, up, z);
-		normalize(z);
-		cross(z, deriv, up);
-		normalize(up);
+		//normalize(deriv);
+		//cross(deriv, up, z);
+		//normalize(z);
+		//cross(z, deriv, up);
+		//normalize(up);
 		glTranslatef(pos[0], pos[1], pos[2]); // put the model in place
-		buildRotMatrix(deriv, up, z, *m); // build the rotation matrix
-		transpose(*m, *m_transpose); // transpose the resulting rotation matrix
-		glMultMatrixf(*m_transpose); // final transformations
+		//buildRotMatrix(deriv, up, z, *m); // build the rotation matrix
+		//transpose(*m, *m_transpose); // transpose the resulting rotation matrix
+		//glMultMatrixf(*m_transpose); // final transformations
 	}
 	
 	bool isValid() {
@@ -196,7 +199,7 @@ public:
 
 	void traceCurve() {
 		glPushMatrix();
-		glColor3f(1.0f, 1.0f, 1.0f);
+		glColor3f(this->rgb[0], this->rgb[1], this->rgb[2]);
 		glBindBuffer(GL_ARRAY_BUFFER, buffer[vboID]);
 		glVertexPointer(3, GL_FLOAT, 0, 0);
 		glDrawArrays(GL_LINE_LOOP, 0, segments);
