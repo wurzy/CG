@@ -30,13 +30,15 @@ void spherical2Cartesian() {
 void showFPS() {
 	frame++;
 	float fps;
+	float timedif;
 	int time = glutGet(GLUT_ELAPSED_TIME);
 	char s[64];
 	if (time - timebase > 1000) {
-		fps = frame * 1000.0 / (time - timebase);
+		timedif = time - timebase;
+		fps = frame * 1000.0 / timedif;
 		timebase = time;
 		frame = 0;
-		sprintf(s, "FPS: %2.f", fps);
+		sprintf_s(s, "Engine - Phase 3 ( FPS: %2.f )", fps);
 		glutSetWindowTitle(s);
 	}
 }
