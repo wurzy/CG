@@ -13,6 +13,7 @@ int timebase = 0;
 
 //toggles
 bool toggleAxis = false;
+bool toggleCentralAxis = false;
 
 //transformations
 string dir = "./files/";
@@ -25,6 +26,26 @@ void spherical2Cartesian() {
 	cx = cam_radius * cos(cam_beta) * sin(cam_alpha);
 	cy = cam_radius * sin(cam_beta);
 	cz = cam_radius * cos(cam_beta) * cos(cam_alpha);
+}
+
+void drawCentralAxis() {
+	glPushMatrix();
+	glBegin(GL_LINES);
+	// X axis in red
+	glColor3f(1.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(500.0f, 0.0f, 0.0f);
+	// Y Axis in green
+	glColor3f(0.0f, 1.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 500.0f, 0.0f);
+	// Z Axis in green
+	glColor3f(0.0f, 0.0f, 1.0f);
+	glVertex3f(0.0f, 0.0f, 0.0f);
+	glVertex3f(0.0f, 0.0f, 500.0f);
+	glColor3f(1.0f, 1.0f, 1.0f);
+	glEnd();
+	glPopMatrix();
 }
 
 void showFPS() {
@@ -70,6 +91,7 @@ void changeSize(int w, int h) {
 }
 
 void draw(){
+	if (toggleCentralAxis) drawCentralAxis();
 	for (Transformations* t : *transformations) {
 		t->drawAll();
 	}
@@ -133,6 +155,9 @@ void processKeys(unsigned char c, int xx, int yy) {
 		for (Transformations* t : *transformations) {
 			t->toggleTrace();
 		}
+		break;
+	case 'c':
+		toggleCentralAxis = toggleCentralAxis ? false : true;
 		break;
 	}
 	glutPostRedisplay();
@@ -211,7 +236,6 @@ void _glutInit(int argc, char **argv) {
 	//  OpenGL settings
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	//glPolygonMode(GL_FRONT_AND_BACK,GL_POINTS);
 }
 
 void _glewInit() {
