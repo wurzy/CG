@@ -115,28 +115,24 @@ void getTransformations(string f) {
 
 void processKeys(unsigned char c, int xx, int yy) {
 	switch (c) {
-	case 'a': // as in axis
-		if (toggleAxis) {
-			for (Transformations* t : *transformations) {
-				t->disableAxis();
-			}
-			toggleAxis = false;
-		}
-		else {
-			for (Transformations* t : *transformations) {
-				t->enableAxis();
-			}
-			toggleAxis = true;
+	case 'a': // axis
+		for (Transformations* t : *transformations) {
+			t->toggleAxis();
 		}
 		break;
-	case 's': // show geometry
+	case 's': // show triangles
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		break;
-	case 'd':
+	case 'd': // default polygonmode
 		glPolygonMode(GL_FRONT, GL_FILL);
 		break;
-	case 'f': // show geometry
+	case 'f': // show points
 		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+		break;
+	case 't':
+		for (Transformations* t : *transformations) {
+			t->toggleTrace();
+		}
 		break;
 	}
 	glutPostRedisplay();

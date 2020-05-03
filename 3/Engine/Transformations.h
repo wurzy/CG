@@ -63,6 +63,7 @@ class Translate {
 public:
 	bool animated;
 	bool traced;
+	bool toggledTrace;
 	float x, y, z;
 	CatmullRom* cr;
 
@@ -71,12 +72,14 @@ public:
 		this->x = this->y = this->z = 0;
 		this->animated = false;
 		this->traced = false;
+		this->toggledTrace = false;
 	}
 
 	Translate(float cx, float cy, float cz) {
 		this->cr = NULL;
 		this->animated = false;
 		this->traced = false;
+		this->toggledTrace = false;
 		this->x = cx;
 		this->y = cy;
 		this->z = cz;
@@ -86,6 +89,7 @@ public:
 		this->x = this->y = this->z = 0;
 		this->animated = true;
 		this->traced = false;
+		this->toggledTrace = false;
 		this->cr = new CatmullRom(controlPoints, t, seg);
 	}
 
@@ -93,6 +97,7 @@ public:
 		this->x = this->y = this->z = 0;
 		this->animated = true;
 		this->traced = true;
+		this->toggledTrace = true;
 		this->cr = new CatmullRom(controlPoints, t, seg, id, rgb);
 	}
 
@@ -103,12 +108,16 @@ public:
 		}
 	}
 
+	void toggleTrace() {
+		this->toggledTrace = this->toggledTrace ? false : true;
+	}
+
 	void apply() {
 		if (!this->animated) {
 			glTranslatef(this->x, this->y, this->z);
 		}
 		else if (this->cr->isValid()) {
-			if (traced) {
+			if (this->traced && this->toggledTrace) {
 				cr->traceCurve();
 			}
 			cr->animatedTranslate();
@@ -238,17 +247,17 @@ public:
 		}
 	}
 
-	void enableAxis() {
-		this->axis = true;
+	void toggleAxis() {
+		this->axis = this->axis ? false : true;
 		for (Transformations* t : this->subgroups) {
-			t->enableAxis(); // subgroup transformations, recursive
+			t->toggleAxis(); // subgroup transformations, recursive
 		}
 	}
 
-	void disableAxis() {
-		this->axis = false;
+	void toggleTrace() {
+		if (this->translate) this->translate->toggleTrace();
 		for (Transformations* t : this->subgroups) {
-			t->disableAxis(); // subgroup transformations, recursive
+			t->toggleTrace(); // subgroup transformations, recursive
 		}
 	}
 
