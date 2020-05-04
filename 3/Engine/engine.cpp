@@ -11,9 +11,16 @@ bool zoom = false; // to calculate zoom
 int frame = 0;
 int timebase = 0;
 
+//time
+float previousTime = 0;
+float currentTime;
+float elapsedTime = 0;
+
+
 //toggles
 bool toggleAxis = false;
 bool toggleCentralAxis = false;
+bool togglePause = false;
 
 //transformations
 string dir = "./files/";
@@ -90,10 +97,20 @@ void changeSize(int w, int h) {
 	glMatrixMode(GL_MODELVIEW);
 }
 
+void calculateTime() {
+	currentTime = glutGet(GLUT_ELAPSED_TIME);
+	float delta = currentTime - previousTime;
+	previousTime = currentTime;
+	if (!togglePause) {
+		elapsedTime += delta;
+	}
+}
+
 void draw(){
+	calculateTime();
 	if (toggleCentralAxis) drawCentralAxis();
 	for (Transformations* t : *transformations) {
-		t->drawAll();
+		t->drawAll(elapsedTime);
 	}
 }
 
@@ -158,6 +175,9 @@ void processKeys(unsigned char c, int xx, int yy) {
 		break;
 	case 'c':
 		toggleCentralAxis = toggleCentralAxis ? false : true;
+		break;
+	case 'p':
+		togglePause = togglePause ? false : true;
 		break;
 	}
 	glutPostRedisplay();

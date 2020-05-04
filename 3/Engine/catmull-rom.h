@@ -157,9 +157,9 @@ public:
 		this->buffer = b;
 	}
 
-	void animatedTranslate() {
+	void animatedTranslate(float elapsed_time) {
 		float m[4][4], m_transpose[4][4];
-		this->gt = glutGet(GLUT_ELAPSED_TIME) / this->animationTime; // elapsed time
+		this->gt = elapsed_time / this->animationTime; // elapsed time
 		this->gt -= floor(gt); // has to be between 0 and 1
 
 		getGlobalCatmullRomPoint(gt, pos, deriv);

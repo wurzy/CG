@@ -50,9 +50,9 @@ public:
 		this->animated = a;
 	}
 	
-	void apply() {
+	void apply(float elapsed_time) {
 		if (this->animated) {
-			this->ang = (glutGet(GLUT_ELAPSED_TIME) / this->time) * 360; // current angle related to elapsed time
+			this->ang = (elapsed_time  / this->time) * 360; // current angle related to elapsed time
 		}
 		glRotatef(this->ang, this->x, this->y, this->z);
 	}
@@ -112,7 +112,7 @@ public:
 		this->toggledTrace = this->toggledTrace ? false : true;
 	}
 
-	void apply() {
+	void apply(float elapsed_time) {
 		if (!this->animated) {
 			glTranslatef(this->x, this->y, this->z);
 		}
@@ -120,7 +120,7 @@ public:
 			if (this->traced && this->toggledTrace) {
 				cr->traceCurve();
 			}
-			cr->animatedTranslate();
+			cr->animatedTranslate(elapsed_time);
 		}
 		else {
 			cout << "ERROR. Minimum of 4 points required. Aborting this transformation..." << endl;
@@ -283,10 +283,10 @@ public:
 		glPopMatrix();
 	}
 
-	void drawAll() {
+	void drawAll(float elapsed_time) {
 		glPushMatrix();
-		if (this->translate) this->translate->apply(); // parent transformations
-		if (this->rotate) this->rotate->apply();
+		if (this->translate) this->translate->apply(elapsed_time); // parent transformations
+		if (this->rotate) this->rotate->apply(elapsed_time);
 		if (this->scale) this->scale->apply();
 
 		for (Model* m : this->models) {
@@ -295,7 +295,7 @@ public:
 		}
 
 		for (Transformations* t : this->subgroups) {
-			t->drawAll(); // subgroup transformations, recursive
+			t->drawAll(elapsed_time); // subgroup transformations, recursive
 		}
 		glPopMatrix();
 
