@@ -28,7 +28,6 @@ class CatmullRom {
 	float z[3];
 	float up[3] = { 0,1,0 };
 
-
 	int segments;
 	float* rgb;
 	GLuint vboID;

@@ -16,7 +16,6 @@ float previousTime = 0;
 float currentTime;
 float elapsedTime = 0;
 
-
 //toggles
 bool toggleAxis = false;
 bool toggleCentralAxis = false;
