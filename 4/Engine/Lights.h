@@ -17,7 +17,7 @@
 #include <math.h>
 
 class Light {
-protected:
+public:
 	GLenum id;
 	float* pos;
 	float* diff;
@@ -25,7 +25,6 @@ protected:
 	float* spec;
 	bool toggled;
 
-public:
 	Light(GLenum i, float* p, float* d, float* a, float* s) {
 		this->pos = p;
 		this->diff = d;
@@ -46,50 +45,52 @@ public:
 		}
 	}
 
-	void create() {
-		glLightfv(this->id, GL_POSITION, this->pos);
-		glLightfv(this->id, GL_AMBIENT, this->amb);
-		glLightfv(this->id, GL_DIFFUSE, this->diff);
-		glLightfv(this->id, GL_SPECULAR, this->spec);
+	void init() {
+		glEnable(GL_LIGHT0 + this->id);
 	}
 
-	virtual void apply(){}
+	void create() {
+		glLightfv(GL_LIGHT0 + this->id, GL_POSITION, this->pos);
+		glLightfv(GL_LIGHT0 + this->id, GL_AMBIENT, this->amb);
+		glLightfv(GL_LIGHT0 + this->id, GL_DIFFUSE, this->diff);
+		glLightfv(GL_LIGHT0 + this->id, GL_SPECULAR, this->spec);
+	}
+
+	virtual void start(){}
 };
 
 class DirectionalLight: public Light{
 public:
 	DirectionalLight(GLenum i, float* p, float* d, float* a, float* s) : Light(i, p, d, a, s){}
 
-	void apply() {
+	void start() {
 		this->create();
 	}
 };
 
 class PointLight: public Light {
-protected:
 	float quad_att; // quadratic attenuation
 public:
 	PointLight(GLenum i, float* p, float* d, float* a, float* s, float at) : Light(i, p, d, a, s){
 		this->quad_att = at;
 	}
 
-	void apply() {
+	void start() {
 		this->create();
 		glLightfv(this->id, GL_QUADRATIC_ATTENUATION, &(this->quad_att));
 	}
 };
 
 class SpotLight: public Light {
-protected:
+public:
 	float* dir;
 	float cutoff, exponent; // cut-off angle, exponent
-public:
 	SpotLight(GLenum i, float* p, float* d, float* a, float* s, float* di, float cut, float exp) : Light(i, p, d, a, s) {
 		this->dir = di;
 		this->cutoff = cut;
 		this->exponent = exp;
 	}
-	void apply() {
+	void start() {
 		this->create();
 		glLightfv(this->id, GL_SPOT_DIRECTION, this->dir);
 		glLightfv(this->id, GL_SPOT_EXPONENT, &(this->exponent));

@@ -109,34 +109,27 @@ void calculateTime() {
 
 void draw(){
 	calculateTime();
+
+	for (Light* l : *lights) {
+		l->start();
+	}
+
 	if (toggleCentralAxis) drawCentralAxis();
+
 	for (Transformations* t : *transformations) {
 		t->drawAll(elapsedTime);
 	}
 }
 
 void renderScene(void) {
-
-	float pos[4] = { 2.0, 2.0, 2.0, 0.0 };
-
-	//float pos[4] = { 0.0, 0.0, 0.0, 1.0 }; //pra ficar no sol como lanterna
-	float white[] = { 0.8, 0.8, 0.8, 1.0 };
-
 	// clear buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+	
 	// set the camera
 	glLoadIdentity();
 	gluLookAt(cx, cy, cz,
 		0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f);
-
-	glLightfv(GL_LIGHT0, GL_POSITION, pos);
-
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, white);
-	glMaterialf(GL_FRONT, GL_SHININESS, 128);
-	
 
 	showFPS();
 
@@ -158,6 +151,10 @@ void readXML(string f) {
 	glGenBuffers(nFig, figures);
 	glGenBuffers(nFig, normalfigures);
 	
+	for (Light* l : *lights) {
+		l->init();
+	}
+
 	for (Transformations* t : *transformations) {
 		t->addReferenceBuffer(figures, normalfigures);
 		t->start(); 
@@ -256,7 +253,7 @@ void _glutInit(int argc, char **argv) {
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_DOUBLE | GLUT_RGBA);
 	glutInitWindowPosition(200, 100);
 	glutInitWindowSize(1200, 800);
-	glutCreateWindow("Engine - Phase 3");
+	glutCreateWindow("Engine - Phase 4");
 
 	// Required callback registry 
 	glutDisplayFunc(renderScene);
@@ -267,29 +264,21 @@ void _glutInit(int argc, char **argv) {
 	glutKeyboardFunc(processKeys);
 	glutMouseFunc(mouseButton);
 	glutMotionFunc(mouseMove);
-	   
-	// Light Settings
-	glEnable(GL_NORMALIZE);
-	glEnable(GL_LIGHTING);
 
 	// OpenGL settings
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_COLOR_MATERIAL);
 }
 
 
 void _glewInit() {
 	glewInit();
 
-	//GLfloat dark[4] = { 0.2, 0.2, 0.2, 1.0 };
-	//GLfloat white[4] = { 1.0, 1.0, 1.0, 1.0 };
-
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
-	
-	//glLightfv(GL_LIGHT0, GL_AMBIENT, dark);
-	//glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-	//glLightfv(GL_LIGHT0, GL_SPECULAR, white);
 }
 
 int main(int argc, char **argv) {

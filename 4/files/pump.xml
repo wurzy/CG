@@ -1,11 +1,14 @@
 <scene>
+  <lights>
+    <light type="POINT" attenuation="1.0f"/>
+  </lights>
   <group>
     <!--Sun-->
     <rotate time="100" x="0" y="1" z="0"/>
     <scale x="1.8" y="1.8" z="1.8"/>
     <colour r="255" g="92" b="21" />
     <models>
-      <model file="Sphere.3d"/>
+      <model file="Sphere2.3d"/>
     </models>
   </group>
 
@@ -29,7 +32,7 @@
     <scale x="0.2" y="0.2" z="0.2"/>
     <colour r="101" g="75" b="22" />
     <models>
-      <model file="Sphere.3d" />
+      <model file="Sphere2.3d" />
     </models>
   </group>
   <!--Venus-->
@@ -52,7 +55,7 @@
     <scale x="0.45" y="0.45" z="0.45"/>
     <colour r="232" g="167" b="37" />
     <models>
-      <model file="Sphere.3d"/>
+      <model file="Sphere2.3d"/>
     </models>
   </group>
 

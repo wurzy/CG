@@ -168,8 +168,8 @@ public:
 			p[i + 2] = this->points.at(j).z;
 					
 			n[i] = this->points.at(j).nx;
-			n[i+1] = this->points.at(j).ny;
-			n[i+2] = this->points.at(j).nz;
+			n[i + 1] = this->points.at(j).ny;
+			n[i + 2] = this->points.at(j).nz;
 			
 			i += 3;
 		}
@@ -189,10 +189,8 @@ public:
 		glBindBuffer(GL_ARRAY_BUFFER, buffer[vboID]);
 		glVertexPointer(3, GL_FLOAT, 0, 0);
 
-		
 		glBindBuffer(GL_ARRAY_BUFFER, normal[vboID]);
 		glNormalPointer(GL_FLOAT, 0, 0);		
-		
 		
 		glDrawArrays(GL_TRIANGLES, 0, points.size());
 	}

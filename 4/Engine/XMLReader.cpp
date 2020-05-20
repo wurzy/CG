@@ -138,18 +138,22 @@ namespace XMLReader {
 	void parseLights(XMLElement* elem, vector<Light*>* lights) {
 		Light* l;
 		string type;
-		float pos[4], diff[4], amb[4], spec[4];
-		pos[0] = pos[1] = pos[2] = pos[3] = 0.0f;
-		diff[0] = diff[1] = diff[2] = diff[3] = 1.0f;
-		amb[0] = amb[1] = amb[2] = 0.2f; amb[3] = 1.0f;
-		spec[0] = spec[1] = spec[2] = 0.0f; spec[3] = 1.0f;
 		unsigned int id = 0;
-
+		float *pos, *diff, *amb, *spec;
 		for (XMLElement* light = elem->FirstChildElement(); light; light = light->NextSiblingElement()) {
 			if (id == 8) {
 				cout << "WARNING: too many lights (>8). Ignoring the remaining lights..." << endl;
 				break; 
 			}
+			pos = new float[4];
+			diff = new float[4];
+			amb = new float[4];
+			spec = new float[4];
+			pos[0] = pos[1] = pos[2] = pos[3] = 0.0f;
+			diff[0] = diff[1] = diff[2] = 0.8f; diff[3] = 1.0f;
+			amb[0] = amb[1] = amb[2] = 0.2f; amb[3] = 1.0f;
+			spec[0] = spec[1] = spec[2] = spec[3] = 1.0f;
+
 			light->QueryFloatAttribute("posX", &pos[0]);
 			light->QueryFloatAttribute("posY", &pos[1]);
 			light->QueryFloatAttribute("posZ", &pos[2]);
@@ -167,18 +171,18 @@ namespace XMLReader {
 			light->QueryFloatAttribute("specB", &spec[2]);
 
 			type = light->Attribute("type");
-
-			if (type.compare("DIRECTIONAL")) {
+			if (type.compare("DIRECTIONAL")==0) {
 				l = new DirectionalLight(id,pos,diff,amb,spec);
 				lights->push_back(l);
 			}
-			else if (type.compare("POINT")) {
+			else if (type.compare("POINT")==0) {
 				float att = light->FloatAttribute("attenuation");
+				pos[3] = 1.0f;
 				l = new PointLight(id, pos, diff, amb, spec, att);
 				lights->push_back(l);
 			}
-			else if (type.compare("SPOT")) {
-				float dir[3];
+			else if (type.compare("SPOT")==0) {
+				float *dir = new float[3];
 				float cutoff = light->FloatAttribute("cutoff");
 				float exp = light->FloatAttribute("exponent");
 
