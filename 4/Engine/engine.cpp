@@ -268,7 +268,11 @@ void _glutInit(int argc, char **argv) {
 	glutMouseFunc(mouseButton);
 	glutMotionFunc(mouseMove);
 	   
-	//  OpenGL settings
+	// Light Settings
+	glEnable(GL_NORMALIZE);
+	glEnable(GL_LIGHTING);
+
+	// OpenGL settings
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 }
@@ -277,15 +281,15 @@ void _glutInit(int argc, char **argv) {
 void _glewInit() {
 	glewInit();
 
-	GLfloat dark[4] = { 0.2, 0.2, 0.2, 1.0 };
-	GLfloat white[4] = { 1.0, 1.0, 1.0, 1.0 };
+	//GLfloat dark[4] = { 0.2, 0.2, 0.2, 1.0 };
+	//GLfloat white[4] = { 1.0, 1.0, 1.0, 1.0 };
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
 	
-	glLightfv(GL_LIGHT0, GL_AMBIENT, dark);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, white);
+	//glLightfv(GL_LIGHT0, GL_AMBIENT, dark);
+	//glLightfv(GL_LIGHT0, GL_DIFFUSE, white);
+	//glLightfv(GL_LIGHT0, GL_SPECULAR, white);
 }
 
 int main(int argc, char **argv) {
@@ -295,10 +299,6 @@ int main(int argc, char **argv) {
 	readXML(dir + argv[1]);
 	spherical2Cartesian();
 
-	glEnable(GL_NORMALIZE);
-	glEnable(GL_LIGHTING);
-	glEnable(GL_LIGHT0);
-	
 // enter GLUT's main cycle
 	glutMainLoop();
 	return 1;
