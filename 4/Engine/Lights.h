@@ -1,6 +1,6 @@
 #pragma once
-#ifndef __MY__LIGHTS__
-#define __MY__LIGHTS__
+#ifndef __MY__LIGHTS__V__
+#define __MY__LIGHTS__V__
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -23,7 +23,7 @@ protected:
 	float* diff;
 	float* amb;
 	float* spec;
-	bool toggle;
+	bool toggled;
 
 public:
 	Light(GLenum i, float* p, float* d, float* a, float* s) {
@@ -32,17 +32,17 @@ public:
 		this->amb = a;
 		this->spec = s;
 		this->id = i;
-		this->toggle = true;
+		this->toggled = true;
 	}
 
 	void toggle() {
-		if (toggle) {
+		if (toggled) {
 			glDisable(id);
-			toggle = false;
+			toggled = false;
 		}
 		else {
 			glEnable(id);
-			toggle = true;
+			toggled = true;
 		}
 	}
 
@@ -84,7 +84,7 @@ protected:
 	float* dir;
 	float cutoff, exponent; // cut-off angle, exponent
 public:
-	SpotLight(GLenum i, float* p, float* d, float* a, float* s, float at, float* di, float cut, float exp) : Light(i, p, d, a, s) {
+	SpotLight(GLenum i, float* p, float* d, float* a, float* s, float* di, float cut, float exp) : Light(i, p, d, a, s) {
 		this->dir = di;
 		this->cutoff = cut;
 		this->exponent = exp;

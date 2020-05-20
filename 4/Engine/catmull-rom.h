@@ -1,3 +1,6 @@
+#ifndef  __MY__CATMULL__ROM__
+#define __MY__CATMULL__ROM__
+
 #include <stdlib.h> //clash com GLUT
 #include <stdio.h>
 #include <fstream>
@@ -32,6 +35,8 @@ class CatmullRom {
 	float* rgb;
 	GLuint vboID;
 	GLuint* buffer;
+
+	bool follows; // if the object rotates along the curve
 
 private:
 
@@ -134,22 +139,27 @@ private:
 	}
 
 public:
-	CatmullRom(vector<Point> p, float time, int seg) {
+	CatmullRom(vector<Point> p, float time, int seg, bool rot) {
 		this->segPoints = p;
 		this->points = p.size();
 		this->animationTime = time * 1000; // seconds to milliseconds
 		this->segments = seg;
 		this->vboID = 0;
 		this->rgb = NULL;
+		this->follows = rot;
 	}
 
-	CatmullRom(vector<Point> p, float time, int seg, GLuint id, float* color) {
+	CatmullRom(vector<Point> p, float time, int seg, GLuint id, float* color, bool rot) {
 		this->segPoints = p;
 		this->points = p.size();
 		this->animationTime = time * 1000; // seconds to milliseconds
 		this->segments = seg;
 		this->vboID = id;
-		this->rgb = color;
+		this->rgb = new float[3];
+		this->rgb[0] = color[0] / 255.0f;
+		this->rgb[1] = color[1] / 255.0f;
+		this->rgb[2] = color[2] / 255.0f;
+		this->follows = rot;
 	}
 
 	void addReferenceBuffer(GLuint* b) {
@@ -163,15 +173,17 @@ public:
 
 		getGlobalCatmullRomPoint(gt, pos, deriv);
 
-		normalize(deriv);
-		cross(deriv, up, z);
-		normalize(z);
-		cross(z, deriv, up);
-		normalize(up);
 		glTranslatef(pos[0], pos[1], pos[2]); // put the model in place
-		buildRotMatrix(deriv, up, z, *m); // build the rotation matrix
-		transpose(*m, *m_transpose); // transpose the resulting rotation matrix
-		glMultMatrixf(*m_transpose); // final transformations
+		if(follows){
+			normalize(deriv);
+			cross(deriv, up, z);
+			normalize(z);
+			cross(z, deriv, up);
+			normalize(up);
+			buildRotMatrix(deriv, up, z, *m); // build the rotation matrix
+			transpose(*m, *m_transpose); // transpose the resulting rotation matrix
+			glMultMatrixf(*m_transpose); // final transformations
+		}
 	}
 	
 	bool isValid() {
@@ -202,3 +214,4 @@ public:
 		glDrawArrays(GL_LINE_LOOP, 0, segments);
 	}
 };
+#endif // ! __MY__CATMULL__ROM__

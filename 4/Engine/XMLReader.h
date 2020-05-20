@@ -11,6 +11,7 @@
 #include "Transformations.h"
 #include "tinyxml2.h"
 #include "Point.h"
+#include "Lights.h"
 
 #define _USE_MATH_DEFINES
 #define DIR "./files/"
@@ -20,7 +21,7 @@ using namespace std;
 using namespace tinyxml2;
 
 namespace XMLReader {
-	void xmlReader(string f, vector<Transformations*>* transforms, unsigned int* nFig);
+	void xmlReader(string f, vector<Transformations*>* transforms, vector<Light*>* ls, unsigned int* nFig);
 }
 
 #endif

@@ -24,6 +24,7 @@ bool togglePause = false;
 //transformations
 string dir = "./files/";
 vector<Transformations*>* transformations;
+vector<Light*>* lights;
 
 //vbo
 GLuint *figures;
@@ -66,7 +67,7 @@ void showFPS() {
 		fps = frame * 1000.0 / timedif;
 		timebase = time;
 		frame = 0;
-		sprintf_s(s, "Engine - Phase 3 ( FPS: %2.f )", fps);
+		sprintf_s(s, "Engine - Phase 4 ( FPS: %2.f )", fps);
 		glutSetWindowTitle(s);
 	}
 }
@@ -130,8 +131,6 @@ void renderScene(void) {
 		0.0f, 0.0f, 0.0f,
 		0.0f, 1.0f, 0.0f);
 
-
-
 	glLightfv(GL_LIGHT0, GL_POSITION, pos);
 
 	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, white);
@@ -146,12 +145,12 @@ void renderScene(void) {
 	glutSwapBuffers();
 }
 
-void getTransformations(string f) {
+void readXML(string f) {
 	GLuint nFig = 0;
-	//GLuint nTraces = 0;
 	transformations = new vector<Transformations*>();
+	lights = new vector<Light*>();
 
-	xmlReader(f, transformations, &nFig); // nFig is the number of models and traces
+	xmlReader(f, transformations, lights, &nFig); // nFig is the number of models and traces
 
 	figures = new GLuint[nFig]();
 	normalfigures = new GLuint[nFig]();
@@ -293,7 +292,7 @@ int main(int argc, char **argv) {
 	_glutInit(argc,argv);
 	_glewInit();
 	
-	getTransformations(dir + argv[1]);
+	readXML(dir + argv[1]);
 	spherical2Cartesian();
 
 	glEnable(GL_NORMALIZE);

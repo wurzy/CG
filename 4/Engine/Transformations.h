@@ -85,20 +85,20 @@ public:
 		this->z = cz;
 	}
 
-	Translate(vector<Point> controlPoints, float t, int seg) {
+	Translate(vector<Point> controlPoints, float t, int seg, bool rot) {
 		this->x = this->y = this->z = 0;
 		this->animated = true;
 		this->traced = false;
 		this->toggledTrace = false;
-		this->cr = new CatmullRom(controlPoints, t, seg);
+		this->cr = new CatmullRom(controlPoints, t, seg, rot);
 	}
 
-	Translate(vector<Point> controlPoints, float t, int seg, GLuint id, float* rgb) {
+	Translate(vector<Point> controlPoints, float t, int seg, GLuint id, float* rgb, bool rot) {
 		this->x = this->y = this->z = 0;
 		this->animated = true;
 		this->traced = true;
 		this->toggledTrace = true;
-		this->cr = new CatmullRom(controlPoints, t, seg, id, rgb);
+		this->cr = new CatmullRom(controlPoints, t, seg, id, rgb, rot);
 	}
 
 	void prepareTranslate(GLuint* b) {
@@ -242,10 +242,10 @@ public:
 		this->rotate = r;
 	}
 
-	void addRGB(float r, float g, float b) {
-		this->red = r;
-		this->green = g;
-		this->blue = b;
+	void addRGB(int* rgb) {
+		this->red = rgb[0]/255.0f;
+		this->green = rgb[1]/255.0f;
+		this->blue = rgb[2]/255.0f;
 	}
 
 	void addReferenceBuffer(GLuint* b, GLuint* n) {
