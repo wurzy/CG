@@ -27,8 +27,7 @@ vector<Transformations*>* transformations;
 vector<Light*>* lights;
 
 //vbo
-GLuint *figures;
-GLuint* normalfigures;
+GLuint *figures, *normals, *textures;
 
 void spherical2Cartesian() {
 	cx = cam_radius * cos(cam_beta) * sin(cam_alpha);
@@ -146,17 +145,20 @@ void readXML(string f) {
 	xmlReader(f, transformations, lights, &nFig); // nFig is the number of models and traces
 
 	figures = new GLuint[nFig]();
-	normalfigures = new GLuint[nFig]();
+	normals = new GLuint[nFig]();
+	textures = new GLuint[nFig]();
+	int* ids = new int[nFig]();
 
 	glGenBuffers(nFig, figures);
-	glGenBuffers(nFig, normalfigures);
+	glGenBuffers(nFig, normals);
+	glGenBuffers(nFig, textures);
 	
 	for (Light* l : *lights) {
 		l->init();
 	}
 
 	for (Transformations* t : *transformations) {
-		t->addReferenceBuffer(figures, normalfigures);
+		t->addReferenceBuffer(figures, normals, textures, ids);
 		t->start(); 
 	}
 
@@ -268,9 +270,13 @@ void _glutInit(int argc, char **argv) {
 	// OpenGL settings
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
-	glEnable(GL_LIGHTING);
 	glEnable(GL_NORMALIZE);
-	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
+	//glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_TEXTURE_2D);
+
+	//float ambient[4] = { 0,0,0,1 };
+//	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient);
 }
 
 
@@ -279,6 +285,7 @@ void _glewInit() {
 
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_NORMAL_ARRAY);
+	glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 }
 
 int main(int argc, char **argv) {

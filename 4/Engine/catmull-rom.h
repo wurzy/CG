@@ -208,7 +208,7 @@ public:
 	}
 
 	void traceCurve() {
-		glColor3f(this->rgb[0], this->rgb[1], this->rgb[2]);
+		//glColor3f(this->rgb[0], this->rgb[1], this->rgb[2]);
 		glBindBuffer(GL_ARRAY_BUFFER, buffer[vboID]);
 		glVertexPointer(3, GL_FLOAT, 0, 0);
 		glDrawArrays(GL_LINE_LOOP, 0, segments);

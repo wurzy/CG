@@ -10,7 +10,7 @@ namespace XMLReader {
 		Point p;
 		if (file.is_open()) {
 			while (file.good()) {
-				file >> p.x >> p.y >> p.z >> p.nx >> p.ny >> p.nz;
+				file >> p.x >> p.y >> p.z >> p.nx >> p.ny >> p.nz >> p.t2 >> p.t1;
 				if (file.eof()) break;
 				points.push_back(p);
 				i++;
@@ -24,10 +24,48 @@ namespace XMLReader {
 	}
 
 	void parseModels(XMLElement* models, Transformations* transforms, unsigned int* nFig) {
+		float *diff, *amb, *spec, *emiss;
+
 		for (XMLElement* elem = models->FirstChildElement("model"); elem; elem = elem->NextSiblingElement("model")) {
 			string file = elem->Attribute("file");
 			vector<Point> points = readModel(DIR + file);
-			transforms->addModel(new Model(points, *nFig));
+
+			diff = new float[4];
+			amb = new float[4];
+			spec = new float[4];
+			emiss = new float[4];
+			float shin = 128.0f;
+			amb[0] = amb[1] = amb[2] = 0.2f; amb[3] = 1.0f;
+			diff[0] = diff[1] = diff[2] = 0.8f; diff[3] = 1.0f;
+			spec[0] = spec[1] = spec[2] = spec[3] = 1.0f;
+			emiss[0] = emiss[1] = emiss[2] = 0.0f; emiss[3] = 1.0f;
+
+			elem->QueryFloatAttribute("diffR", &diff[0]);
+			elem->QueryFloatAttribute("diffG", &diff[1]);
+			elem->QueryFloatAttribute("diffB", &diff[2]);
+			
+			elem->QueryFloatAttribute("ambR", &amb[0]);
+			elem->QueryFloatAttribute("ambG", &amb[1]);
+			elem->QueryFloatAttribute("ambB", &amb[2]);
+			
+			elem->QueryFloatAttribute("specR", &spec[0]);
+			elem->QueryFloatAttribute("specG", &spec[1]);
+			elem->QueryFloatAttribute("specB", &spec[2]);
+
+			elem->QueryFloatAttribute("emissR", &emiss[0]);
+			elem->QueryFloatAttribute("emissG", &emiss[1]);
+			elem->QueryFloatAttribute("emissB", &emiss[2]);
+
+			elem->QueryFloatAttribute("shininess", &shin);
+
+			const char* text = elem->Attribute("texture");
+			if (text) {
+				transforms->addModel(new Model(points, *nFig, diff, amb, spec, emiss, shin, text));
+			}
+
+			else {
+				transforms->addModel(new Model(points, *nFig, diff, amb, spec, emiss, shin));
+			}
 			(*nFig)++;
 		}
 	}
@@ -79,7 +117,7 @@ namespace XMLReader {
 			}
 			if (traced) {
 				float* rgb = new float[3]();
-				rgb[0] = rgb[1] = rgb[2] = 255;
+				rgb[0] = rgb[1] = rgb[2] = 255.0f;
 				translate->QueryFloatAttribute("r", &rgb[0]);
 				translate->QueryFloatAttribute("g", &rgb[1]);
 				translate->QueryFloatAttribute("b", &rgb[2]);
@@ -121,12 +159,12 @@ namespace XMLReader {
 				parseGroup(elem, subgroup,nFig);
 			}
 			else if (type.compare("colour") == 0) {
-				int rgb[3];
-				rgb[0] = rgb[1] = rgb[2] = 255;
-				elem->QueryIntAttribute("r", &rgb[0]);
-				elem->QueryIntAttribute("g", &rgb[1]);
-				elem->QueryIntAttribute("b", &rgb[2]);
-				transforms->addRGB(rgb);
+				float *rgb = new float[3];
+				rgb[0] = rgb[1] = rgb[2] = 255.0f;
+				elem->QueryFloatAttribute("r", &rgb[0]);
+				elem->QueryFloatAttribute("g", &rgb[1]);
+				elem->QueryFloatAttribute("b", &rgb[2]);
+				//transforms->addRGB(rgb);
 			}
 			else {
 				cout << "ERROR. <Group> has an invalid element: " << elem->Value() << ". Skipping element..."<< endl;
@@ -176,17 +214,20 @@ namespace XMLReader {
 				lights->push_back(l);
 			}
 			else if (type.compare("POINT")==0) {
-				float att = light->FloatAttribute("attenuation");
+				float att = 0.0f;
+				light->QueryFloatAttribute("attenuation",&att);
 				pos[3] = 1.0f;
 				l = new PointLight(id, pos, diff, amb, spec, att);
 				lights->push_back(l);
 			}
 			else if (type.compare("SPOT")==0) {
 				float *dir = new float[3];
-				float cutoff = light->FloatAttribute("cutoff");
-				float exp = light->FloatAttribute("exponent");
-
+				float cutoff = 30.0f;
+				float exp = 1.0f;
+				pos[3] = 1.0f;
 				dir[0] = dir[1] = dir[2] = 0;
+				light->QueryFloatAttribute("cutoff", &cutoff);
+				light->QueryFloatAttribute("exponent", &exp);
 				light->QueryFloatAttribute("dirX", &dir[0]);
 				light->QueryFloatAttribute("dirY", &dir[1]);
 				light->QueryFloatAttribute("dirZ", &dir[2]);
@@ -196,6 +237,7 @@ namespace XMLReader {
 			}
 			else {
 				cout << "ERROR. On <Lights>, element Light has an invalid type: " << type << ". Skipping current Light..." << endl;
+				id--;
 			}
 			id++;
 		}

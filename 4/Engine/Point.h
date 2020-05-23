@@ -8,6 +8,8 @@ struct Point {
 	float nx;
 	float ny;
 	float nz;
+	float t1;
+	float t2;
 };
 #endif // !__MYPOINT__
 

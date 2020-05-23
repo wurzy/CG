@@ -23,7 +23,6 @@ public:
 	float* diff;
 	float* amb;
 	float* spec;
-	bool toggled;
 
 	Light(GLenum i, float* p, float* d, float* a, float* s) {
 		this->pos = p;
@@ -31,18 +30,6 @@ public:
 		this->amb = a;
 		this->spec = s;
 		this->id = i;
-		this->toggled = true;
-	}
-
-	void toggle() {
-		if (toggled) {
-			glDisable(id);
-			toggled = false;
-		}
-		else {
-			glEnable(id);
-			toggled = true;
-		}
 	}
 
 	void init() {
@@ -77,7 +64,7 @@ public:
 
 	void start() {
 		this->create();
-		glLightfv(this->id, GL_QUADRATIC_ATTENUATION, &(this->quad_att));
+		glLightfv(GL_LIGHT0 + this->id, GL_QUADRATIC_ATTENUATION, &(this->quad_att));
 	}
 };
 
@@ -85,16 +72,18 @@ class SpotLight: public Light {
 public:
 	float* dir;
 	float cutoff, exponent; // cut-off angle, exponent
-	SpotLight(GLenum i, float* p, float* d, float* a, float* s, float* di, float cut, float exp) : Light(i, p, d, a, s) {
+
+	SpotLight(GLenum i, float* p, float* d, float* a, float* s, float* di, float cut, float exp) : Light(i, p, d, a, s){
 		this->dir = di;
 		this->cutoff = cut;
 		this->exponent = exp;
 	}
+
 	void start() {
 		this->create();
-		glLightfv(this->id, GL_SPOT_DIRECTION, this->dir);
-		glLightfv(this->id, GL_SPOT_EXPONENT, &(this->exponent));
-		glLightfv(this->id, GL_SPOT_CUTOFF, &(this->cutoff));
+		glLightfv(GL_LIGHT0 + this->id, GL_SPOT_DIRECTION, this->dir);
+		glLightfv(GL_LIGHT0 + this->id, GL_SPOT_EXPONENT, &(this->exponent));
+		glLightfv(GL_LIGHT0 + this->id, GL_SPOT_CUTOFF, &(this->cutoff));
 	}
 };
 
