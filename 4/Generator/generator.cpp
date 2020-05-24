@@ -2,6 +2,29 @@
 
 string dir = "./files/";
 
+void makeVetor(float* a, float* b, float* res) {
+	res[0] = b[0] - a[0];
+	res[1] = b[1] - a[1];
+	res[2] = b[2] - a[2];
+}
+
+void cross(float* a, float* b, float* res) {
+
+	res[0] = a[1] * b[2] - a[2] * b[1];
+	res[1] = a[2] * b[0] - a[0] * b[2];
+	res[2] = a[0] * b[1] - a[1] * b[0];
+}
+
+
+void normalize(float* a) {
+
+	float l = sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+	a[0] = a[0] / l;
+	a[1] = a[1] / l;
+	a[2] = a[2] / l;
+}
+
+
 void drawSphere(double r, int stacks, int slices, string f) {
 	ofstream file(dir + f);
 	const float phi = 2 * M_PI / (float)slices, theta = M_PI / (float)stacks;
@@ -54,7 +77,87 @@ void drawSphere(double r, int stacks, int slices, string f) {
 	}
 	file.close();
 }
+/*
+void drawSphere(double r, int stacks, int slices, string f) {
+	ofstream file(dir + f);
+	const float phi = 2 * M_PI / (float)slices, theta = M_PI / (float)stacks;
+	float theta1, theta2, phi1, phi2;
+	float cima1, cima2, lado1, lado2;
 
+	float ladoInc = 1.0 / slices;
+	float cimaInc = 1.0 / stacks;
+
+	for (int j = 0; j < stacks; j++) {
+		theta1 = theta * j;
+		theta2 = theta * (j + 1.0f);
+
+		cima1 = stacks - cimaInc * j;
+		cima2 = stacks - cimaInc * (j + 1.0f);
+
+		for (int i = 0; i < slices; i++) {
+			phi1 = phi * i;
+			phi2 = phi * (i + 1.0f);
+			lado1 = ladoInc * i;
+			lado2 = ladoInc * (i + 1.0f);
+
+			pontos   1 . ---- . 4 theta1
+						 |      |
+						 |      |
+					   2 . ---- . 3 theta2
+					  phi1     phi2
+			
+
+			float* n1 = new float[3];
+			n1[0] = r * sinf(theta1) * sinf(phi1);
+			n1[1] = r * cosf(theta1);
+			n1[2] = r * sinf(theta1) * cosf(phi1);
+			normalize(n1);
+
+			float* n2 = new float[3];
+			n2[0] = r * sinf(theta2) * sinf(phi1);
+			n2[1] = r * cosf(theta2);
+			n2[2] = r * sinf(theta2) * cosf(phi1);
+			normalize(n2);
+
+			float* n3 = new float[3];
+			n3[0] = r * sinf(theta2) * sinf(phi2);
+			n3[1] = r * cosf(theta2);
+			n3[2] = r * sinf(theta2) * cosf(phi2);
+			normalize(n3);
+
+			file << r * sinf(theta1) * sinf(phi1) << " " << r * cosf(theta1) << " " << r * sinf(theta1) * cosf(phi1)
+				<< " " << n1[0] << " " << n1[1] << " " << n1[2] << " " << cima1 << " " << lado1 << endl;
+			file << r * sinf(theta2) * sinf(phi1) << " " << r * cosf(theta2) << " " << r * sinf(theta2) * cosf(phi1) 
+				<< " " << n2[0] << " " << n2[1] << " " << n2[2] << " " << cima2 << " " << lado1 << endl;
+			file << r * sinf(theta2) * sinf(phi2) << " " << r * cosf(theta2) << " " << r * sinf(theta2) * cosf(phi2) 
+				<< " " << n3[0] << " " << n3[1] << " " << n3[2] << " " << cima2 << " " << lado2 << endl;
+
+			n1[0] = r * sinf(theta2) * sinf(phi2);
+			n1[1] = r * cosf(theta2);
+			n1[2] = r * sinf(theta2) * cosf(phi2);
+			normalize(n1);
+
+			n2[0] = r * sinf(theta1) * sinf(phi2);
+			n2[1] = r * cosf(theta1);
+			n2[2] = r * sinf(theta1) * cosf(phi2);
+			normalize(n2);
+
+			n3[0] = r * sinf(theta1) * sinf(phi1);
+			n3[1] = r * cosf(theta1);
+			n3[2] = r * sinf(theta1) * cosf(phi1);
+			normalize(n3);
+
+			file << r * sinf(theta2) * sinf(phi2) << " " << r * cosf(theta2) << " " << r * sinf(theta2) * cosf(phi2)
+				<< " " << n1[0] << " " << n1[1] << " " << n1[2] << " " << cima2 << " " << lado2 << endl;
+			file << r * sinf(theta1) * sinf(phi2) << " " << r * cosf(theta1) << " " << r * sinf(theta1) * cosf(phi2)
+				<< " " << n2[0] << " " << n2[1] << " " << n2[2] << " " << cima1 << " " << lado2 << endl;
+			file << r * sinf(theta1) * sinf(phi1) << " " << r * cosf(theta1) << " " << r * sinf(theta1) * cosf(phi1)
+				<< " " << n3[0] << " " << n3[1] << " " << n3[2] << " " << cima1 << " " << lado1 << endl;
+		}
+	}
+	file.close();
+}
+*/
 void drawBox(float x, float y, float z, int d, string f) {
 	ofstream file(dir + f);
 	int div = d + 1; // 3 camadas, 2 divisoes
@@ -344,28 +447,6 @@ void drawVase(float radius, float radius2, float h, int slices, int stacks, stri
 		}
 	}
 	file.close();
-}
-
-void makeVetor(float* a, float* b, float* res) {
-	res[0] = b[0] - a[0];
-	res[1] = b[1] - a[1];
-	res[2] = b[2] - a[2];
-}
-
-void cross(float* a, float* b, float* res) {
-
-	res[0] = a[1] * b[2] - a[2] * b[1];
-	res[1] = a[2] * b[0] - a[0] * b[2];
-	res[2] = a[0] * b[1] - a[1] * b[0];
-}
-
-
-void normalize(float* a) {
-
-	float l = sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
-	a[0] = a[0] / l;
-	a[1] = a[1] / l;
-	a[2] = a[2] / l;
 }
 
 // rc = radius inside the ring, ro = radius of the ring

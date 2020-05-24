@@ -37,7 +37,7 @@ namespace XMLReader {
 			float shin = 128.0f;
 			amb[0] = amb[1] = amb[2] = 0.2f; amb[3] = 1.0f;
 			diff[0] = diff[1] = diff[2] = 0.8f; diff[3] = 1.0f;
-			spec[0] = spec[1] = spec[2] = spec[3] = 1.0f;
+			spec[0] = spec[1] = spec[2] = 0.0f;  spec[3] = 1.0f;
 			emiss[0] = emiss[1] = emiss[2] = 0.0f; emiss[3] = 1.0f;
 
 			elem->QueryFloatAttribute("diffR", &diff[0]);
