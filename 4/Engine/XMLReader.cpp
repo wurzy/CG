@@ -158,14 +158,6 @@ namespace XMLReader {
 				transforms->addSubgroup(subgroup);
 				parseGroup(elem, subgroup,nFig);
 			}
-			else if (type.compare("colour") == 0) {
-				float *rgb = new float[3];
-				rgb[0] = rgb[1] = rgb[2] = 255.0f;
-				elem->QueryFloatAttribute("r", &rgb[0]);
-				elem->QueryFloatAttribute("g", &rgb[1]);
-				elem->QueryFloatAttribute("b", &rgb[2]);
-				//transforms->addRGB(rgb);
-			}
 			else {
 				cout << "ERROR. <Group> has an invalid element: " << elem->Value() << ". Skipping element..."<< endl;
 			}

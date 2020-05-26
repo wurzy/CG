@@ -2,35 +2,12 @@
 
 string dir = "./files/";
 
-void makeVetor(float* a, float* b, float* res) {
-	res[0] = b[0] - a[0];
-	res[1] = b[1] - a[1];
-	res[2] = b[2] - a[2];
-}
-
-void cross(float* a, float* b, float* res) {
-
-	res[0] = a[1] * b[2] - a[2] * b[1];
-	res[1] = a[2] * b[0] - a[0] * b[2];
-	res[2] = a[0] * b[1] - a[1] * b[0];
-}
-
-
-void normalize(float* a) {
-
-	float l = sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
-	a[0] = a[0] / l;
-	a[1] = a[1] / l;
-	a[2] = a[2] / l;
-}
-
-
 void drawSphere(double r, int stacks, int slices, string f) {
 	ofstream file(dir + f);
 	const float phi = 2 * M_PI / (float)slices, theta = M_PI / (float)stacks;
 	float theta1, theta2, phi1, phi2;
 	float ladoInc = 1.0 / slices;
-	float cimaInc = 1.0 / slices;
+	float cimaInc = 1.0 / stacks;
 	float cima1, cima2, lado1, lado2;
 
 	for (int j = 0; j < stacks; j++) {
@@ -50,114 +27,25 @@ void drawSphere(double r, int stacks, int slices, string f) {
 			float val5 = r * sinf(theta2) * sinf(phi2), val6 = r * sinf(theta2) * cosf(phi2);
 			float val9 = r * sinf(theta1) * sinf(phi2), val10 = r * sinf(theta1) * cosf(phi2);
 			float val7 = r * cosf(theta1), val8 = r * cosf(theta2);
-
-			float l1 = sqrt(val1 * val1 + val7 * val7 + val2 * val2);
-			float l2 = sqrt(val3 * val3 + val8 * val8 + val4 * val4);
-			float l3 = sqrt(val5 * val5 + val8 * val8 + val6 * val6);
-
-			float l4 = sqrt(val5 * val5 + val8 * val8 + val6 * val6);
-			float l5 = sqrt(val9 * val9 + val7 * val7 + val10 * val10);
-			float l6 = sqrt(val1 * val1 + val7 * val7 + val2 * val2);
-
-
+			
 			/*pontos   1 . ---- . 4 theta1
 						 |      |
 						 |      |
 					   2 . ---- . 3 theta2
 					  phi1     phi2
 			*/
-			file << val1 << " " << val7 << " " << val2 << " " << val1 / l1 << " " << val7 / l1 << " " << val2 / l1 << " " << cima1 << " " << lado1 << endl;
-			file << val3 << " " << val8 << " " << val4 << " " << val3 / l2 << " " << val8 / l2 << " " << val4 / l2 << " " << cima2 << " " << lado1 << endl;
-			file << val5 << " " << val8 << " " << val6 << " " << val5 / l3 << " " << val8 / l3 << " " << val6 / l3 << " " << cima2 << " " << lado2 << endl;
+			file << val1 << " " << val7 << " " << val2 << " " << val1/r << " " << val7/r << " " << val2/r << " " << cima1 << " " << lado1 << endl;
+			file << val3 << " " << val8 << " " << val4 << " " << val3/r << " " << val8/r << " " << val4/r << " " << cima2 << " " << lado1 << endl;
+			file << val5 << " " << val8 << " " << val6 << " " << val5/r << " " << val8/r << " " << val6/r << " " << cima2 << " " << lado2 << endl;
 
-			file << val5 << " " << val8 << " " << val6 << " " << val5 / l4 << " " << val8 / l4 << " " << val6 / l4 << " " << cima2 << " " << lado2 << endl;
-			file << val9 << " " << val7 << " " << val10 << " " << val9 / l5 << " " << val7 / l5 << " " << val10 / l5 << " " << cima1 << " " << lado2 << endl;
-			file << val1 << " " << val7 << " " << val2 << " " << val1 / l6 << " " << val7 / l6 << " " << val2 / l6 << " " << cima1 << " " << lado1 << endl;
+			file << val5 << " " << val8 << " " << val6 << " " << val5/r << " " << val8/r << " " << val6/r << " " << cima2 << " " << lado2 << endl;
+			file << val9 << " " << val7 << " " << val10<< " " << val9/r << " " << val7/r << " " << val10/r<< " " << cima1 << " " << lado2 << endl;
+			file << val1 << " " << val7 << " " << val2 << " " << val1/r << " " << val7/r << " " << val2/r << " " << cima1 << " " << lado1 << endl;
 		}
 	}
 	file.close();
 }
-/*
-void drawSphere(double r, int stacks, int slices, string f) {
-	ofstream file(dir + f);
-	const float phi = 2 * M_PI / (float)slices, theta = M_PI / (float)stacks;
-	float theta1, theta2, phi1, phi2;
-	float cima1, cima2, lado1, lado2;
 
-	float ladoInc = 1.0 / slices;
-	float cimaInc = 1.0 / stacks;
-
-	for (int j = 0; j < stacks; j++) {
-		theta1 = theta * j;
-		theta2 = theta * (j + 1.0f);
-
-		cima1 = stacks - cimaInc * j;
-		cima2 = stacks - cimaInc * (j + 1.0f);
-
-		for (int i = 0; i < slices; i++) {
-			phi1 = phi * i;
-			phi2 = phi * (i + 1.0f);
-			lado1 = ladoInc * i;
-			lado2 = ladoInc * (i + 1.0f);
-
-			pontos   1 . ---- . 4 theta1
-						 |      |
-						 |      |
-					   2 . ---- . 3 theta2
-					  phi1     phi2
-			
-
-			float* n1 = new float[3];
-			n1[0] = r * sinf(theta1) * sinf(phi1);
-			n1[1] = r * cosf(theta1);
-			n1[2] = r * sinf(theta1) * cosf(phi1);
-			normalize(n1);
-
-			float* n2 = new float[3];
-			n2[0] = r * sinf(theta2) * sinf(phi1);
-			n2[1] = r * cosf(theta2);
-			n2[2] = r * sinf(theta2) * cosf(phi1);
-			normalize(n2);
-
-			float* n3 = new float[3];
-			n3[0] = r * sinf(theta2) * sinf(phi2);
-			n3[1] = r * cosf(theta2);
-			n3[2] = r * sinf(theta2) * cosf(phi2);
-			normalize(n3);
-
-			file << r * sinf(theta1) * sinf(phi1) << " " << r * cosf(theta1) << " " << r * sinf(theta1) * cosf(phi1)
-				<< " " << n1[0] << " " << n1[1] << " " << n1[2] << " " << cima1 << " " << lado1 << endl;
-			file << r * sinf(theta2) * sinf(phi1) << " " << r * cosf(theta2) << " " << r * sinf(theta2) * cosf(phi1) 
-				<< " " << n2[0] << " " << n2[1] << " " << n2[2] << " " << cima2 << " " << lado1 << endl;
-			file << r * sinf(theta2) * sinf(phi2) << " " << r * cosf(theta2) << " " << r * sinf(theta2) * cosf(phi2) 
-				<< " " << n3[0] << " " << n3[1] << " " << n3[2] << " " << cima2 << " " << lado2 << endl;
-
-			n1[0] = r * sinf(theta2) * sinf(phi2);
-			n1[1] = r * cosf(theta2);
-			n1[2] = r * sinf(theta2) * cosf(phi2);
-			normalize(n1);
-
-			n2[0] = r * sinf(theta1) * sinf(phi2);
-			n2[1] = r * cosf(theta1);
-			n2[2] = r * sinf(theta1) * cosf(phi2);
-			normalize(n2);
-
-			n3[0] = r * sinf(theta1) * sinf(phi1);
-			n3[1] = r * cosf(theta1);
-			n3[2] = r * sinf(theta1) * cosf(phi1);
-			normalize(n3);
-
-			file << r * sinf(theta2) * sinf(phi2) << " " << r * cosf(theta2) << " " << r * sinf(theta2) * cosf(phi2)
-				<< " " << n1[0] << " " << n1[1] << " " << n1[2] << " " << cima2 << " " << lado2 << endl;
-			file << r * sinf(theta1) * sinf(phi2) << " " << r * cosf(theta1) << " " << r * sinf(theta1) * cosf(phi2)
-				<< " " << n2[0] << " " << n2[1] << " " << n2[2] << " " << cima1 << " " << lado2 << endl;
-			file << r * sinf(theta1) * sinf(phi1) << " " << r * cosf(theta1) << " " << r * sinf(theta1) * cosf(phi1)
-				<< " " << n3[0] << " " << n3[1] << " " << n3[2] << " " << cima1 << " " << lado1 << endl;
-		}
-	}
-	file.close();
-}
-*/
 void drawBox(float x, float y, float z, int d, string f) {
 	ofstream file(dir + f);
 	int div = d + 1; // 3 camadas, 2 divisoes
@@ -179,62 +67,62 @@ void drawBox(float x, float y, float z, int d, string f) {
 	for (int i = 0; i < div; i++) {
 		for (int j = 0; j < div; j++) {
 			//face de cima, construir assim: para cada X, fazer uma fila de Z's, locked y
-			file << xs[i + 1] << " " << ys[0] << " " << zs[j] << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
-			file << xs[i] << " " << ys[0] << " " << zs[j] << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
-			file << xs[i] << " " << ys[0] << " " << zs[j + 1] << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[i + 1] << " " << ys[0] << " " << zs[j]     << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[i]     << " " << ys[0] << " " << zs[j]     << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[i]     << " " << ys[0] << " " << zs[j + 1] << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
 
-			file << xs[i] << " " << ys[0] << " " << zs[j + 1] << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[i]     << " " << ys[0] << " " << zs[j + 1] << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
 			file << xs[i + 1] << " " << ys[0] << " " << zs[j + 1] << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
-			file << xs[i + 1] << " " << ys[0] << " " << zs[j] << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[i + 1] << " " << ys[0] << " " << zs[j]     << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
 
 			//face de baixo, locked z
 
-			file << xs[i + 1] << " " << ys[div] << " " << zs[j] << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
-			file << xs[i] << " " << ys[div] << " " << zs[j + 1] << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
-			file << xs[i] << " " << ys[div] << " " << zs[j] << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[i+1] << " " << ys[div] << " " << zs[j]     << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[i]   << " " << ys[div] << " " << zs[j + 1] << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[i]   << " " << ys[div] << " " << zs[j]     << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
 
-			file << xs[i + 1] << " " << ys[div] << " " << zs[j] << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[i + 1] << " " << ys[div] << " " << zs[j]     << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
 			file << xs[i + 1] << " " << ys[div] << " " << zs[j + 1] << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
-			file << xs[i] << " " << ys[div] << " " << zs[j + 1] << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[i]     << " " << ys[div] << " " << zs[j+1]   << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
 			//face da frente, locked z
 
-			file << xs[i + 1] << " " << ys[j + 1] << " " << zs[div] << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
-			file << xs[i + 1] << " " << ys[j] << " " << zs[div] << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
-			file << xs[i] << " " << ys[j + 1] << " " << zs[div] << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
+			file << xs[i + 1] << " " << ys[j+1] << " " << zs[div] << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
+			file << xs[i + 1] << " " << ys[j]   << " " << zs[div] << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
+			file << xs[i]     << " " << ys[j+1] << " " << zs[div] << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
 
-			file << xs[i + 1] << " " << ys[j] << " " << zs[div] << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
-			file << xs[i] << " " << ys[j] << " " << zs[div] << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
-			file << xs[i] << " " << ys[j + 1] << " " << zs[div] << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
+			file << xs[i + 1] << " " << ys[j]     << " " << zs[div] << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
+			file << xs[i]     << " " << ys[j]     << " " << zs[div] << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
+			file << xs[i]     << " " << ys[j + 1] << " " << zs[div] << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
 
 			//face de tras, locked z
 
-			file << xs[i] << " " << ys[j] << " " << zs[0] << " " << 0 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << endl;
-			file << xs[i + 1] << " " << ys[j] << " " << zs[0] << " " << 0 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << endl;
-			file << xs[i + 1] << " " << ys[j + 1] << " " << zs[0] << " " << 0 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << endl;
-
-			file << xs[i] << " " << ys[j] << " " << zs[0] << " " << 0 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << endl;
-			file << xs[i + 1] << " " << ys[j + 1] << " " << zs[0] << " " << 0 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << endl;
-			file << xs[i] << " " << ys[j + 1] << " " << zs[0] << " " << 0 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << endl;
+			file << xs[i]   << " " << ys[j]     << " " << zs[0] << " " << 0 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << endl;
+			file << xs[i+1] << " " << ys[j]     << " " << zs[0] << " " << 0 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << endl;
+			file << xs[i+1] << " " << ys[j + 1] << " " << zs[0] << " " << 0 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << endl;
+			
+			file << xs[i]     << " " << ys[j]     << " " << zs[0] << " " << 0 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << endl;
+			file << xs[i + 1] << " " << ys[j+1]   << " " << zs[0] << " " << 0 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << endl;
+			file << xs[i]     << " " << ys[j + 1] << " " << zs[0] << " " << 0 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << endl;
 
 			//face do lado dir, locked x
 
-			file << xs[0] << " " << ys[i + 1] << " " << zs[j] << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[0] << " " << ys[i + 1] << " " << zs[j]     << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
 			file << xs[0] << " " << ys[i + 1] << " " << zs[j + 1] << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
-			file << xs[0] << " " << ys[i] << " " << zs[j] << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[0] << " " << ys[i]     << " " << zs[j]     << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
 
-			file << xs[0] << " " << ys[i + 1] << " " << zs[j + 1] << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
-			file << xs[0] << " " << ys[i] << " " << zs[j + 1] << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
-			file << xs[0] << " " << ys[i] << " " << zs[j] << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[0] << " " << ys[i+1] << " " << zs[j+1] << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[0] << " " << ys[i]   << " " << zs[j+1] << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[0] << " " << ys[i]   << " " << zs[j]   << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
 
 			//face do lado esq, locked x
 
-			file << xs[div] << " " << ys[i + 1] << " " << zs[j + 1] << " " << -1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
-			file << xs[div] << " " << ys[i + 1] << " " << zs[j] << " " << -1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
-			file << xs[div] << " " << ys[i] << " " << zs[j] << " " << -1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[div] << " " << ys[i + 1] << " " << zs[j+1] << " " << -1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[div] << " " << ys[i+1]   << " " << zs[j]   << " " << -1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[div] << " " << ys[i]     << " " << zs[j]   << " " << -1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
 
-			file << xs[div] << " " << ys[i + 1] << " " << zs[j + 1] << " " << -1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
-			file << xs[div] << " " << ys[i] << " " << zs[j] << " " << -1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
-			file << xs[div] << " " << ys[i] << " " << zs[j + 1] << " " << -1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[div] << " " << ys[i + 1] << " " << zs[j+1] << " " << -1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[div] << " " << ys[i]     << " " << zs[j]   << " " << -1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << xs[div] << " " << ys[i]     << " " << zs[j+1] << " " << -1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
 		}
 	}
 	file.close();
@@ -245,44 +133,44 @@ void drawPlane(float side1, float side2, int axis, string f) {
 	float c1 = side1 / 2.0f;
 	float c2 = side2 / 2.0f;
 	switch (axis) {
-	case 0: // default do enunciado, xOz
-		//triangulo 1
+		case 0: // default do enunciado, xOz
+			//triangulo 1
 
-		file << -c1 << " " << 0 << " " << -c2 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
-		file << c1 << " " << 0 << " " << c2 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
-		file << c1 << " " << 0 << " " << -c2 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
-		////triangulo 2
+			file << -c1 << " " << 0 << " " << -c2 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << c1  << " " << 0 << " " << c2  << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << c1  << " " << 0 << " " << -c2 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			////triangulo 2
 
-		file << -c1 << " " << 0 << " " << -c2 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
-		file << -c1 << " " << 0 << " " << c2 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
-		file << c1 << " " << 0 << " " << c2 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
-		break;
-	case 1: // eixo x0y
-		//triangulo 1
+			file << -c1 << " " << 0 << " " << -c2 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << -c1 << " " << 0 << " " << c2  << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << c1  << " " << 0 << " " << c2  << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
+			break;
+		case 1: // eixo x0y
+			//triangulo 1
 
-		file << c1 << " " << c2 << " " << 0 << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
-		file << -c1 << " " << c2 << " " << 0 << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
-		file << c1 << " " << -c2 << " " << 0 << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
-		////triangulo 2
+			file << c1  << " " << c2  << " " << 0 << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
+			file << -c1 << " " << c2  << " " << 0 << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
+			file << c1  << " " << -c2 << " " << 0 << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
+			////triangulo 2
 
-		file << -c1 << " " << c2 << " " << 0 << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
-		file << -c1 << " " << -c2 << " " << 0 << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
-		file << c1 << " " << -c2 << " " << 0 << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
-		break;
-	case 2: // eixo yOz
-		//triangulo 1
+			file << -c1 << " " << c2  << " " << 0 << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
+			file << -c1 << " " << -c2 << " " << 0 << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
+			file << c1  << " " << -c2 << " " << 0 << " " << 0 << " " << 0 << " " << 1 << " " << 0 << " " << 0 << endl;
+			break;
+		case 2: // eixo yOz
+			//triangulo 1
 
-		file << 0 << " " << c1 << " " << c2 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
-		file << 0 << " " << -c1 << " " << c2 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
-		file << 0 << " " << -c1 << " " << -c2 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
-		////triangulo 2
+			file << 0 << " " << c1  << " " << c2  << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << 0 << " " << -c1 << " " << c2  << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << 0 << " " << -c1 << " " << -c2 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			////triangulo 2
 
-		file << 0 << " " << c1 << " " << c2 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
-		file << 0 << " " << -c1 << " " << -c2 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
-		file << 0 << " " << c1 << " " << -c2 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
-		break;
-	default:
-		break;
+			file << 0 << " " << c1 << " " << c2 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << 0 << " " << -c1 << " " << -c2 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			file << 0 << " " << c1 << " " << -c2 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << " " << 0 << endl;
+			break;
+		default: 
+			break;
 	}
 	file.close();
 }
@@ -293,8 +181,8 @@ void drawCone(float radius, float h, int slices, int stacks, string f) {
 	// cam -> altura de cada camada
 	float fat = 2 * M_PI / slices, cam = h / stacks;
 	float fat1, fat2, cam1, cam2, k, j;
-	float alt = -(h / 2); // centrado
-	float ang, rsin1, rsin2, rcos1, rcos2;
+	float alt = -(h/2); // centrado
+	float ang,rsin1,rsin2,rcos1,rcos2;
 
 	for (int n = 0; n < slices; n++) {
 		ang = fat * n; // angulo fatia atual
@@ -304,10 +192,13 @@ void drawCone(float radius, float h, int slices, int stacks, string f) {
 		rcos1 = radius * cos(k);
 		rcos2 = radius * cos(ang);
 
-		file << 0 << " " << alt << " " << 0 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
+		file << 0     << " " << alt << " " << 0     << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
 		file << rsin1 << " " << alt << " " << rcos1 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
 		file << rsin2 << " " << alt << " " << rcos2 << " " << 0 << " " << -1 << " " << 0 << " " << 0 << " " << 0 << endl;
 	}
+
+	float a = M_PI - M_PI/2 - atan2(h, radius);
+	
 
 	for (int i = 0; i < stacks; i++) {
 
@@ -321,13 +212,17 @@ void drawCone(float radius, float h, int slices, int stacks, string f) {
 			j = fat * n; //angulo fatia atual
 			k = j + fat; //angulo fatia seguinte 
 
-			file << fat1 * sin(j) << " " << cam1 << " " << fat1 * cos(j) << " " << sin(j) << " " << 0 << " " << cos(j) << " " << 0 << " " << 0 << endl;
-			file << fat2 * sin(k) << " " << cam2 << " " << fat2 * cos(k) << " " << sin(k) << " " << 0 << " " << cos(k) << " " << 0 << " " << 0 << endl;
-			file << fat2 * sin(j) << " " << cam2 << " " << fat2 * cos(j) << " " << sin(j) << " " << 0 << " " << cos(j) << " " << 0 << " " << 0 << endl;
+			float a1 = cam1 / fat1;
+			float a2 = cam2 / fat2;
+		
 
-			file << fat1 * sin(j) << " " << cam1 << " " << fat1 * cos(j) << " " << sin(j) << " " << 0 << " " << cos(j) << " " << 0 << " " << 0 << endl;
-			file << fat1 * sin(k) << " " << cam1 << " " << fat1 * cos(k) << " " << sin(k) << " " << 0 << " " << cos(k) << " " << 0 << " " << 0 << endl;
-			file << fat2 * sin(k) << " " << cam2 << " " << fat2 * cos(k) << " " << sin(k) << " " << 0 << " " << cos(k) << " " << 0 << " " << 0 << endl;
+			file << fat1 * sin(j) << " " << cam1 << " " << fat1 * cos(j) << " " << sin(j) << " " << a << " " << cos(j) << " " << 0 << " " << 0 << endl;
+			file << fat2 * sin(k) << " " << cam2 << " " << fat2 * cos(k) << " " << sin(k) << " " << a << " " << cos(k) << " " << 0 << " " << 0 << endl;
+			file << fat2 * sin(j) << " " << cam2 << " " << fat2 * cos(j) << " " << sin(j) << " " << a << " " << cos(j) << " " << 0 << " " << 0 << endl;
+
+			file << fat1 * sin(j) << " " << cam1 << " " << fat1 * cos(j) << " " << sin(j) << " " << a << " " << cos(j) << " " << 0 << " " << 0 << endl;
+			file << fat1 * sin(k) << " " << cam1 << " " << fat1 * cos(k) << " " << sin(k) << " " << a << " " << cos(k) << " " << 0 << " " << 0 << endl;
+			file << fat2 * sin(k) << " " << cam2 << " " << fat2 * cos(k) << " " << sin(k) << " " << a << " " << cos(k) << " " << 0 << " " << 0 << endl;
 
 		}
 	}
@@ -416,6 +311,8 @@ void drawVase(float radius, float radius2, float h, int slices, int stacks, stri
 		file << radius * sin(k) << " " << -alt << " " << radius * cos(k) << " " << 0 << " " << 1 << " " << 0 << " " << 0 << " " << 0 << endl;
 	}
 
+	float a = M_PI - M_PI / 2 - atan2(h, (radius-radius2));
+
 	for (int n = 0; n < slices; n++) {
 		ang = fat * n;
 		k = ang + fat;
@@ -436,17 +333,39 @@ void drawVase(float radius, float radius2, float h, int slices, int stacks, stri
 				j = fat * n;
 				k = j + fat;
 
-				file << fat1 * sin(j) << " " << cam1 << " " << fat1 * cos(j) << " " << sin(j) << " " << 0 << " " << cos(j) << " " << 0 << " " << 0 << endl;
-				file << fat2 * sin(k) << " " << cam2 << " " << fat2 * cos(k) << " " << sin(k) << " " << 0 << " " << cos(k) << " " << 0 << " " << 0 << endl;
-				file << fat2 * sin(j) << " " << cam2 << " " << fat2 * cos(j) << " " << sin(j) << " " << 0 << " " << cos(j) << " " << 0 << " " << 0 << endl;
+				file << fat1 * sin(j) << " " << cam1 << " " << fat1 * cos(j) << " " << sin(j) << " " << a << " " << cos(j) << " " << 0 << " " << 0 << endl;
+				file << fat2 * sin(k) << " " << cam2 << " " << fat2 * cos(k) << " " << sin(k) << " " << a << " " << cos(k) << " " << 0 << " " << 0 << endl;
+				file << fat2 * sin(j) << " " << cam2 << " " << fat2 * cos(j) << " " << sin(j) << " " << a << " " << cos(j) << " " << 0 << " " << 0 << endl;
 
-				file << fat1 * sin(j) << " " << cam1 << " " << fat1 * cos(j) << " " << sin(j) << " " << 0 << " " << cos(j) << " " << 0 << " " << 0 << endl;
-				file << fat1 * sin(k) << " " << cam1 << " " << fat1 * cos(k) << " " << sin(k) << " " << 0 << " " << cos(k) << " " << 0 << " " << 0 << endl;
-				file << fat2 * sin(k) << " " << cam2 << " " << fat2 * cos(k) << " " << sin(k) << " " << 0 << " " << cos(k) << " " << 0 << " " << 0 << endl;
+				file << fat1 * sin(j) << " " << cam1 << " " << fat1 * cos(j) << " " << sin(j) << " " << a << " " << cos(j) << " " << 0 << " " << 0 << endl;
+				file << fat1 * sin(k) << " " << cam1 << " " << fat1 * cos(k) << " " << sin(k) << " " << a << " " << cos(k) << " " << 0 << " " << 0 << endl;
+				file << fat2 * sin(k) << " " << cam2 << " " << fat2 * cos(k) << " " << sin(k) << " " << a << " " << cos(k) << " " << 0 << " " << 0 << endl;
 			}
 		}
 	}
 	file.close();
+}
+
+void makeVetor(float* a, float* b, float* res) {
+	res[0] = b[0] - a[0];
+	res[1] = b[1] - a[1];
+	res[2] = b[2] - a[2];
+}
+
+void cross(float* a, float* b, float* res) {
+
+	res[0] = a[1] * b[2] - a[2] * b[1];
+	res[1] = a[2] * b[0] - a[0] * b[2];
+	res[2] = a[0] * b[1] - a[1] * b[0];
+}
+
+
+void normalize(float* a) {
+
+	float l = sqrt(a[0] * a[0] + a[1] * a[1] + a[2] * a[2]);
+	a[0] = a[0] / l;
+	a[1] = a[1] / l;
+	a[2] = a[2] / l;
 }
 
 // rc = radius inside the ring, ro = radius of the ring
@@ -485,17 +404,17 @@ void drawRing(float rc, float ro, int sides, int rings, string f) {
 			float p2[3] = { x2, y2 , z2 };
 			float p3[3] = { x3, y3 , z3 };
 			float p4[3] = { x4, y4 , z4 };
-
+			
 			makeVetor(p1, p3, r1);
 			makeVetor(p1, p4, r2);
-			cross(r1, r2, r5);
+			cross(r1,r2,r5);
 			normalize(r5);
 
 			makeVetor(p4, p2, r3);
 			makeVetor(p4, p1, r4);
 			cross(r3, r4, r6);
 			normalize(r6);
-
+	
 			file << x1 << " " << y1 << " " << z1 << " " << r5[0] << " " << r5[1] << " " << r5[2] << " " << 0 << " " << 0 << endl;
 			file << x3 << " " << y3 << " " << z3 << " " << r5[0] << " " << r5[1] << " " << r5[2] << " " << 0 << " " << 0 << endl;
 			file << x4 << " " << y4 << " " << z4 << " " << r5[0] << " " << r5[1] << " " << r5[2] << " " << 0 << " " << 0 << endl;
@@ -549,7 +468,7 @@ void bezierPatches(float t, float v, int* indicesCP, float** valuesCP, float* co
 	float resV[1][4], resVX[1][4], resVY[1][4], resVZ[1][4];
 	float resVTX[1][4], resVTY[1][4], resVTZ[1][4];
 	float Vx[1], Vy[1], Vz[1];
-
+	
 
 	float U[1][4] = { { pow(t,3) , pow(t,2) , t , 1 } };
 
@@ -652,12 +571,12 @@ void drawBezier(string f1, string f2, int tesselation) {
 
 	if (readFile.is_open()) {
 
-		// primeira linha contém o numero de patches
+		// primeira linha contï¿½m o numero de patches
 		getline(readFile, linha);
 		numPatch = stoi(linha);
 
-		//as seguintes 'numPatch' linhas contém informação dos control points
-		//cada linha terá 16 indices
+		//as seguintes 'numPatch' linhas contï¿½m informaï¿½ï¿½o dos control points
+		//cada linha terï¿½ 16 indices
 		//para guardar a info usamos uma matriz -> indicesCP[numPatch][16]
 		indicesCP = new int* [numPatch];
 		for (int i = 0; i < numPatch; i++) {
@@ -671,12 +590,12 @@ void drawBezier(string f1, string f2, int tesselation) {
 			}
 		}
 
-		// esta linha contém o numero de control points
+		// esta linha contï¿½m o numero de control points
 		getline(readFile, linha);
 		numCP = stoi(linha);
 
-		//as seguintes 'numCP' linhas contém as coordenadas dos control points
-		//cada linha terá 3 coordenadas
+		//as seguintes 'numCP' linhas contï¿½m as coordenadas dos control points
+		//cada linha terï¿½ 3 coordenadas
 		//para guardar a info usamos uma matriz -> valuesCP[numCP][3]
 		valuesCP = new float* [numCP];
 		for (int i = 0; i < numCP; i++) {
@@ -690,7 +609,7 @@ void drawBezier(string f1, string f2, int tesselation) {
 			}
 		}
 
-		//com a informação gravada em memoria, falta agora calcular os pontos através de Bezier
+		//com a informaï¿½ï¿½o gravada em memoria, falta agora calcular os pontos atravï¿½s de Bezier
 		//e guardar esses em ficheiro
 
 		if (writeFile.is_open()) {
@@ -721,19 +640,19 @@ void drawBezier(string f1, string f2, int tesselation) {
 
 
 
-						writeFile << coord0[0] << " " << coord0[1] << " " << coord0[2] << " "
-							<< normal0[0] << " " << normal0[1] << " " << normal0[2] << " " << 0 << " " << 0 << endl;
-						writeFile << coord1[0] << " " << coord1[1] << " " << coord1[2] << " "
-							<< normal1[0] << " " << normal1[1] << " " << normal1[2] << " " << 0 << " " << 0 << endl;
-						writeFile << coord2[0] << " " << coord2[1] << " " << coord2[2] << " "
-							<< normal2[0] << " " << normal2[1] << " " << normal2[2] << " " << 0 << " " << 0 << endl;
+						writeFile << coord0[0]  << " " << coord0[1]  << " " << coord0[2] << " "
+							      << normal0[0] << " " << normal0[1] << " " << normal0[2] << " " << 0 << " " << 0 << endl;
+						writeFile << coord1[0]  << " " << coord1[1]  << " " << coord1[2] << " "
+							      << normal1[0] << " " << normal1[1] << " " << normal1[2] << " " << 0 << " " << 0 << endl;
+						writeFile << coord2[0]  << " " << coord2[1]  << " " << coord2[2] << " " 
+							      << normal2[0] << " " << normal2[1] << " " << normal2[2] << " " << 0 << " " << 0 << endl;
 
-						writeFile << coord0[0] << " " << coord0[1] << " " << coord0[2] << " "
-							<< normal0[0] << " " << normal0[1] << " " << normal0[2] << " " << 0 << " " << 0 << endl;
-						writeFile << coord2[0] << " " << coord2[1] << " " << coord2[2] << " "
-							<< normal2[0] << " " << normal2[1] << " " << normal2[2] << " " << 0 << " " << 0 << endl;
+						writeFile << coord0[0]  << " " << coord0[1]  << " " << coord0[2] << " "
+						          << normal0[0] << " " << normal0[1] << " " << normal0[2] << " " << 0 << " " << 0 << endl;
+						writeFile << coord2[0]  << " " << coord2[1]  << " " << coord2[2] << " "
+						          << normal2[0] << " " << normal2[1] << " " << normal2[2] << " " << 0 << " " << 0 << endl;
 						writeFile << coord3[0] << " " << coord3[1] << " " << coord3[2] << " "
-							<< normal3[0] << " " << normal3[1] << " " << normal3[2] << " " << 0 << " " << 0 << endl;
+								  << normal3[0] << " " << normal3[1] << " " << normal3[2] << " " << 0 << " " << 0 << endl;
 
 
 					}
@@ -763,7 +682,7 @@ void parseInput(int argc, char** argv) {
 		}
 	}
 	else if (string(argv[1]) == "cylinder") {
-		if (argc != 7) {
+		if(argc!=7){
 			cout << "ERROR" << endl;
 		}
 		else {
@@ -800,7 +719,7 @@ void parseInput(int argc, char** argv) {
 		}
 	}
 	else if (string(argv[1]) == "vase") {
-		if (argc != 8) {
+		if (argc!=8) {
 			cout << "ERROR" << endl;
 		}
 		else {
@@ -814,7 +733,7 @@ void parseInput(int argc, char** argv) {
 		}
 		else {
 			cout << "OK! Generating Ring." << endl;
-			drawRing(atof(argv[2]), atof(argv[3]), atoi(argv[4]), atoi(argv[5]), argv[6]);
+			drawRing(atof(argv[2]), atof(argv[3]), atoi(argv[4]), atoi(argv[5]),argv[6]);
 		}
 	}
 	else if (string(argv[1]) == "bezier") {
@@ -834,10 +753,10 @@ void parseInput(int argc, char** argv) {
 
 int main(int argc, char** argv) {
 	_mkdir(dir.c_str());
-	if (argc == 0 || argc > 8) {
+	if (argc == 0 || argc > 8 ) {
 		cout << "ERROR! Few arguments." << endl;
 	}
-	else {
+	else{
 		parseInput(argc, argv);
 	}
 	cout << "DONE!" << endl;
