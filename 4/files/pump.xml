@@ -1,62 +1,17 @@
 <scene>
+  <camera>
+    <lookat x="0" y="0" z="0"/>
+    <radius value="200"/>
+    <sensitivity value="0.001f"/>
+  </camera>
   <lights>
-    <light type="POINT"/>
+    <light type="POINT" posY="10.0f"/>
   </lights>
   <group>
-    <!--Sun-->
-    <rotate time="100" x="0" y="1" z="0"/>
-    <scale x="1.8" y="1.8" z="1.8"/>
-    <colour r="255" g="92" b="21" />
     <models>
-      <model file="Sphere.3d" texture="earth.jpg" emissR="1.0f" emissG="1.0f" emissB="1.0f"/>
+      <model file="Box.3d"/>
     </models>
   </group>
 
-  <!--Mercury-->
-  <group>
-    <translate time="2.5" trace="100">
-      <point x="12" y="0" z="0.0"/>
-      <point x="10.392304845413264" y="0" z="6"/>
-      <point x="6" y="0" z="10.392304845413264"/>
-      <point x="0" y="0" z="12.0"/>
-      <point x="-6" y="0" z="10.392304845413264"/>
-      <point x="-10.392304845413262" y="0" z="6"/>
-      <point x="-12.0" y="0" z="0"/>
-      <point x="-10.392304845413268" y="0" z="-6"/>
-      <point x="-6" y="0" z="-10.39230484541326"/>
-      <point x="0" y="0" z="-12.0"/>
-      <point x="6" y="0" z="-10.392304845413264"/>
-      <point x="10.392304845413266" y="0" z="-6"/>
-    </translate>
-    <rotate time="10" x="0" y="1" z="0"/>
-    <scale x="0.2" y="0.2" z="0.2"/>
-    <colour r="101" g="75" b="22" />
-    <models>
-      <model file="Sphere.3d" texture="venus.jpg" />
-    </models>
-  </group>
-  <!--Venus-->
-  <group>
-    <translate time="5" trace="100">
-      <point x="17.0" y="0" z="0.0"/>
-      <point x="14.722431864335459" y="0" z="8.5"/>
-      <point x="8.5" y="0" z="14.722431864335457"/>
-      <point x="0" y="0" z="17.0"/>
-      <point x="-8.5" y="0" z="14.722431864335459"/>
-      <point x="-14.722431864335455" y="0" z="8.5"/>
-      <point x="-17.0" y="0" z="0"/>
-      <point x="-14.722431864335464" y="0" z="-8.5"/>
-      <point x="-8.5" y="0" z="-14.722431864335451"/>
-      <point x="0" y="0" z="-17.0"/>
-      <point x="8.5" y="0" z="-14.722431864335457"/>
-      <point x="14.72243186433546" y="0" z="-8.5"/>
-    </translate>
-    <rotate time="20" x="0" y="1" z="0"/>
-    <scale x="0.45" y="0.45" z="0.45"/>
-    <colour r="232" g="167" b="37" />
-    <models>
-      <model file="Sphere.3d"/>
-    </models>
-  </group>
 
 </scene>

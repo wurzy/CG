@@ -291,6 +291,32 @@ public:
 	}
 };
 
+class Camera {
+public:
+	float rad;
+	float sensitivity;
+	float* pos;
+	float* la;
+	float* up;
+
+	Camera() {
+		this->rad = 10.0f;
+		this->pos = new float[3];
+		this->la = new float[3];
+		this->up = new float[3];
+		pos[0] = pos[2] = 0.0f; pos[1] = 10.0f;
+		la[0] = la[0] = la[0] = 0.0f;
+		up[0] = up[2] = 0.0f; up[1] = 1.0f;
+		this->sensitivity = 0.001f;
+	}
+
+	void updateCartesian(float cam_beta, float cam_alpha) {
+		this->pos[0] = rad * cos(cam_beta) * sin(cam_alpha);
+		this->pos[1] = rad * sin(cam_beta);
+		this->pos[2] = rad * cos(cam_beta) * cos(cam_alpha);
+	}
+};
+
 class Transformations {
 	Translate* translate; 
 	Rotate* rotate;
@@ -371,6 +397,7 @@ public:
 	}
 
 	void drawAxis() {
+		glEnable(GL_COLOR_MATERIAL);
 		glBegin(GL_LINES);
 		// X axis in red
 		glColor3f(1.0f, 0.0f, 0.0f);
@@ -389,6 +416,7 @@ public:
 		glColor3f(1.0f, 1.0f, 1.0f);
 		glEnd();
 		glColor3f(1.0f, 1.0f, 1.0f);
+		glDisable(GL_COLOR_MATERIAL);
 	}
 
 	void drawAll(float elapsed_time) {

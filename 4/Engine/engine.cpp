@@ -1,8 +1,7 @@
 #include "engine.h"
 //camera
-float cam_radius = 200.0f; 
+Camera* camera;
 float cam_alpha = 0, cam_beta = 0;
-float cx, cy, cz; // camera as a sphere of radius r
 float lastX, lastY; // last position on window
 bool start = true; // to calculate first iteration of lastX lastY
 bool zoom = false; // to calculate zoom
@@ -30,13 +29,11 @@ vector<Light*>* lights;
 GLuint *figures, *normals, *textures;
 
 void spherical2Cartesian() {
-	cx = cam_radius * cos(cam_beta) * sin(cam_alpha);
-	cy = cam_radius * sin(cam_beta);
-	cz = cam_radius * cos(cam_beta) * cos(cam_alpha);
+	camera->updateCartesian(cam_beta, cam_alpha);
 }
 
 void drawCentralAxis() {
-	glPushMatrix();
+	glEnable(GL_COLOR_MATERIAL);
 	glBegin(GL_LINES);
 	// X axis in red
 	glColor3f(1.0f, 0.0f, 0.0f);
@@ -52,7 +49,7 @@ void drawCentralAxis() {
 	glVertex3f(0.0f, 0.0f, 500.0f);
 	glColor3f(1.0f, 1.0f, 1.0f);
 	glEnd();
-	glPopMatrix();
+	glDisable(GL_COLOR_MATERIAL);
 }
 
 void showFPS() {
@@ -126,9 +123,9 @@ void renderScene(void) {
 	
 	// set the camera
 	glLoadIdentity();
-	gluLookAt(cx, cy, cz,
-		0.0f, 0.0f, 0.0f,
-		0.0f, 1.0f, 0.0f);
+	gluLookAt(camera->pos[0],camera->pos[1], camera->pos[2],
+		camera->la[0], camera->la[1], camera->la[2],
+		camera->up[0], camera->up[1], camera->up[2]);
 
 	showFPS();
 
@@ -138,11 +135,12 @@ void renderScene(void) {
 }
 
 void readXML(string f) {
+	camera = new Camera();
 	GLuint nFig = 0;
 	transformations = new vector<Transformations*>();
 	lights = new vector<Light*>();
 
-	xmlReader(f, transformations, lights, &nFig); // nFig is the number of models and traces
+	xmlReader(f, transformations, lights, camera, &nFig); // nFig is the number of models and traces
 
 	figures = new GLuint[nFig]();
 	normals = new GLuint[nFig]();
@@ -208,13 +206,13 @@ void mouseMove(int x, int y) {
 	// only executes if button was clicked
 	if (lastX >= 0) {
 		if (zoom) {
-			if (cam_radius + y_off > 0) { // so it doesnt invert
-				cam_radius += y_off;
+			if (camera->rad + y_off > 0) { // so it doesnt invert
+				camera->rad += y_off;
 			}
 		}
 		else {
-			cam_alpha -= x_off * 0.001f; // calculate x offset for camera
-			float camOffset = y_off * 0.001f;
+			cam_alpha -= x_off * camera->sensitivity; // calculate x offset for camera
+			float camOffset = y_off * camera->sensitivity;
 			if (cam_beta + camOffset < -1.5f ) {
 				cam_beta = -1.5f;
 			}
@@ -272,7 +270,6 @@ void _glutInit(int argc, char **argv) {
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_NORMALIZE);
 	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_LIGHTING);
 
 	//float ambient[4] = { 0,0,0,1 };

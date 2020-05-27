@@ -164,7 +164,6 @@ namespace XMLReader {
 		}
 	}
 
-
 	void parseLights(XMLElement* elem, vector<Light*>* lights) {
 		Light* l;
 		string type;
@@ -228,21 +227,64 @@ namespace XMLReader {
 				lights->push_back(l);
 			}
 			else {
-				cout << "ERROR. On <Lights>, element Light has an invalid type: " << type << ". Skipping current Light..." << endl;
+				cout << "ERROR. On <lights>, element \"light\" has an invalid type: " << type << ". Skipping current Light..." << endl;
 				id--;
 			}
 			id++;
 		}
 	}
 	
-	void xmlReader(string f, vector<Transformations*>* transforms, vector<Light*>* ls, unsigned int* nFig) {
+	void parseCamera(XMLElement* camera, Camera* cam) {
+		for (XMLElement* elem = camera->FirstChildElement(); elem; elem = elem->NextSiblingElement()) {
+			string type = elem->Value();
+			if (type.compare("position")==0) {
+				elem->QueryFloatAttribute("x", &(cam->pos[0]));
+				elem->QueryFloatAttribute("y", &(cam->pos[1]));
+				elem->QueryFloatAttribute("z", &(cam->pos[2]));
+			}
+
+			else if (type.compare("lookat")==0) {
+				elem->QueryFloatAttribute("x", &(cam->la[0]));
+				elem->QueryFloatAttribute("y", &(cam->la[1]));
+				elem->QueryFloatAttribute("z", &(cam->la[2]));
+			}
+
+			else if (type.compare("up")==0) {
+				elem->QueryFloatAttribute("x", &(cam->up[0]));
+				elem->QueryFloatAttribute("y", &(cam->up[1]));
+				elem->QueryFloatAttribute("z", &(cam->up[2]));
+			}
+
+			else if (type.compare("radius")==0) {
+				elem->QueryFloatAttribute("value", &(cam->rad));
+			}
+
+			else if (type.compare("sensitivity")==0) {
+				elem->QueryFloatAttribute("value", &(cam->sensitivity));
+			}
+
+			else {
+				cout << "ERROR. On <camera>, invalid element: " << type << ". Skipping element..." << endl;
+			}
+		}
+	}
+
+	void xmlReader(string f, vector<Transformations*>* transforms, vector<Light*>* ls, Camera* camera, unsigned int* nFig) {
 		XMLDocument doc;
 		XMLNode* root;
 		XMLElement* lights;
+		XMLElement* cam;
 
 		Transformations* t;
 		if (!(doc.LoadFile(f.c_str()))) {
 			root = doc.FirstChild(); // scene is root
+
+			// for the camera
+			cam = root->FirstChildElement("camera");
+
+			if (cam) {
+				parseCamera(cam,camera);
+			}
 
 			// for the lights
 			lights = root->FirstChildElement("lights");
