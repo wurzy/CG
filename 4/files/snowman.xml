@@ -12,7 +12,7 @@
   <group>
     <translate x="0" y="-5" z="0"/>
     <models>
-      <model file="Plane.3d" diffR="0.7" diffG="0.1f" diffB="0.1f" specR="0" specB="0" specG="0" ambR="0.1" ambG="0.1" ambB="0.1"/>
+      <model file="Plane.3d" diffR="0.8" diffG="0.8f" diffB="0.8f" specR="0" specB="0" specG="0" ambR="0.8" ambG="0.8" ambB="0.8" texture="snow.jpg"/>
     </models>
   </group>
   <models>
