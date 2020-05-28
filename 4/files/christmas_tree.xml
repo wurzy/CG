@@ -12,7 +12,7 @@
   <!--Floor-->
   <group>
     <models>
-      <model file="Plane.3d" diffR="0.7" diffG="0.8f" diffB="0.7f" specR="0.5" specB="0.5" specG="0.5" ambR="0.1" ambG="0.1" ambB="0.1"/>
+      <model file="Plane.3d" diffR="1" diffG="1" diffB="1" specR="0.5" specB="0.5" specG="0.5" ambR="0.8" ambG="0.8" ambB="0.8" texture="snow.jpg"/>
     </models>
   </group>
   <!--Base-->
