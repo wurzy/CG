@@ -712,7 +712,7 @@
       <rotate time="2" x="1" y="0" z="0"/>
       <scale x="0.4" y="0.4" z="0.4" />
       <models>
-        <model file="Teapot.3d" diffR="0.84" diffG="0.2f" diffB="1.0f" ambR="0.25" ambB="0.25" ambG="0.25" specR="0.33" specB="0.33" specG="0.33"/>
+        <model file="Teapot.3d" texture="pop.jpg"/>
       </models>
       </group>
    </group>
