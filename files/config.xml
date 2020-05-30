@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<scene>
-  <model file='Cylinder.3d'/>
-  <model file='Box.3d'/>
-  <model file='Plane.3d'/>
-</scene>
